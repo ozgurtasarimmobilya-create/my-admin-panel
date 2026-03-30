@@ -20,12 +20,18 @@ export default function UltimateSEOEditor() {
   const [blocks, setBlocks] = useState<Block[]>([]);
   const [mounted, setMounted] = useState(false);
   const [h1Text, setH1Text] = useState('');
+  const [snippetText, setSnippetText] = useState('');
+  const [introText, setIntroText] = useState('');
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
   if (!mounted) return null;
+
+  const countWords = (str: string) => {
+    return str.trim() === '' ? 0 : str.trim().split(/\s+/).length;
+  };
 
   const addBlock = (type: string, label: string) => {
     const newBlock: Block = {
@@ -80,7 +86,7 @@ export default function UltimateSEOEditor() {
             </div>
           ))}
         </div>
-        <div className="p-6 border-t bg-white">
+        <div className="p-6 border-t bg-white text-center">
           <Link href="/icerik-yonetimi" className="flex items-center justify-center w-full py-3 bg-slate-50 border border-slate-200 text-slate-900 rounded-xl font-bold text-[12px] tracking-widest hover:bg-red-50 hover:text-red-600 transition-all duration-300 uppercase cursor-pointer">
             Sistemden Ayrıl
           </Link>
@@ -99,7 +105,7 @@ export default function UltimateSEOEditor() {
             <span className="text-[14px] font-bold text-slate-900 tracking-tight">Corian</span>
           </nav>
 
-          {/* H1 BAŞLIK TABELASI */}
+          {/* H1 BAŞLIK */}
           <div className="space-y-4 mb-10 text-left">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-4">
@@ -114,7 +120,6 @@ export default function UltimateSEOEditor() {
                 {h1Text.length} / 60
               </span>
             </div>
-            
             <textarea 
               value={h1Text}
               onChange={(e) => setH1Text(e.target.value)}
@@ -129,13 +134,22 @@ export default function UltimateSEOEditor() {
             />
           </div>
 
-          {/* KALICI SNIPPET VE GİRİŞ TABELALARI */}
+          {/* KALICI SNIPPET VE GİRİŞ (SAYAÇLI) */}
           <div className="space-y-12 mb-12 border-b border-slate-50 pb-12 text-left">
+            {/* Snippet Bölümü */}
             <div className="space-y-4">
-              <span className="inline-flex items-center px-3 py-1.5 bg-slate-900 text-white text-[11px] font-bold rounded-lg tracking-widest shadow-sm">
-                Snippet Özet
-              </span>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <span className="inline-flex items-center px-3 py-1.5 bg-slate-900 text-white text-[11px] font-bold rounded-lg tracking-widest shadow-sm">Snippet Özet</span>
+                  <span className={`text-[12px] font-bold ${countWords(snippetText) >= 35 && countWords(snippetText) <= 45 ? 'text-emerald-600' : 'text-slate-500'}`}>
+                    {countWords(snippetText) >= 35 && countWords(snippetText) <= 45 ? '✓ SEO Tamam' : 'Hedef: 35-45 Kelime'}
+                  </span>
+                </div>
+                <span className="text-[12px] font-mono font-bold text-slate-500 bg-slate-50 px-2 py-0.5 rounded">{countWords(snippetText)} Kelime</span>
+              </div>
               <textarea 
+                value={snippetText}
+                onChange={(e) => setSnippetText(e.target.value)}
                 className="w-full text-[17px] text-slate-600 border-none outline-none resize-none leading-relaxed text-left placeholder:text-slate-300" 
                 placeholder="Bu kısımda makalenin kısa bir özeti ve can alıcı noktalarından bahsedilebilir..." 
                 rows={2} 
@@ -147,11 +161,20 @@ export default function UltimateSEOEditor() {
               />
             </div>
 
+            {/* Giriş Paragrafı Bölümü */}
             <div className="space-y-4">
-              <span className="inline-flex items-center px-3 py-1.5 bg-slate-900 text-white text-[11px] font-bold rounded-lg tracking-widest shadow-sm">
-                Giriş Paragrafı
-              </span>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <span className="inline-flex items-center px-3 py-1.5 bg-slate-900 text-white text-[11px] font-bold rounded-lg tracking-widest shadow-sm">Giriş Paragrafı</span>
+                  <span className={`text-[12px] font-bold ${countWords(introText) >= 50 && countWords(introText) <= 70 ? 'text-emerald-600' : 'text-slate-500'}`}>
+                    {countWords(introText) >= 50 && countWords(introText) <= 70 ? '✓ SEO Tamam' : 'Hedef: 50-70 Kelime'}
+                  </span>
+                </div>
+                <span className="text-[12px] font-mono font-bold text-slate-500 bg-slate-50 px-2 py-0.5 rounded">{countWords(introText)} Kelime</span>
+              </div>
               <textarea 
+                value={introText}
+                onChange={(e) => setIntroText(e.target.value)}
                 className="w-full text-[18px] text-slate-700 border-none outline-none resize-none leading-relaxed text-left placeholder:text-slate-300 italic border-l-4 border-emerald-400 pl-6" 
                 placeholder="Bu kısımda konuya etkileyici bir giriş yapılabilir ve anahtar kelimeler geçirilebilir..." 
                 rows={3} 
@@ -208,8 +231,16 @@ export default function UltimateSEOEditor() {
         <div className="h-[70px] flex items-center justify-center border-b text-[10px] text-slate-400 font-bold uppercase tracking-widest text-center">SEO Analiz</div>
         <div className="p-8 space-y-6">
            <div className="aspect-square bg-slate-900 rounded-[3.5rem] flex flex-col items-center justify-center text-white shadow-xl">
-              <span className="text-[9px] font-bold opacity-40 uppercase tracking-widest mb-1">Skor</span>
-              <span className="text-7xl font-bold italic">{Math.min(blocks.length * 10 + (h1Text.length >= 50 && h1Text.length <= 60 ? 20 : 0), 100)}</span>
+              <span className="text-[9px] font-bold opacity-40 uppercase tracking-widest mb-1 text-center">Genel Skor</span>
+              <span className="text-7xl font-bold italic">
+                {Math.min(
+                  blocks.length * 5 + 
+                  (h1Text.length >= 50 && h1Text.length <= 60 ? 25 : 0) +
+                  (countWords(snippetText) >= 35 && countWords(snippetText) <= 45 ? 25 : 0) +
+                  (countWords(introText) >= 50 && introText.length <= 70 ? 25 : 0), 
+                  100
+                )}
+              </span>
            </div>
            <button className="w-full bg-slate-900 text-white py-5 rounded-2xl text-[11px] font-bold tracking-widest uppercase hover:bg-emerald-600 transition-all duration-300 cursor-pointer shadow-lg active:scale-95">Kaydet</button>
         </div>
