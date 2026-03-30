@@ -1,16 +1,11 @@
 export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-[#F5F5F5] p-24">
-      <div className="flex flex-col items-center text-center">
-        
-        {/* 'font-sans' ekleyerek çentikleri öldürdük, 'font-extrabold' ile o ağır duruşu koruduk */}
-        <h1 className="text-6xl font-extrabold text-[#2F4F4F] tracking-tighter mb-4 font-sans">
+      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm flex flex-col">
+        <h1 className="text-5xl font-extrabold text-[#2F4F4F] tracking-tight mb-4">
           Özgür Tasarım
         </h1>
-        
-        <p className="text-[#696969] text-xl mb-10 font-medium">
-          Admin Kontrol Paneli
-        </p>
+        <p className="text-[#696969] text-xl mb-8">Admin Kontrol Paneli</p>
         
         <div className="flex gap-4">
           <button className="bg-[#2F4F4F] hover:bg-[#1e3333] text-white font-bold py-3 px-8 rounded-lg transition-all duration-300 shadow-lg">
