@@ -56,7 +56,7 @@ export default function UltimateSEOEditor() {
   return (
     <div className="flex h-screen bg-[#F5F5F7] text-[#1D1D1F] font-sans overflow-hidden">
       
-      {/* 1. SOL PANEL (MÜHÜRLÜ) */}
+      {/* 1. SOL PANEL (KORUNDU) */}
       <aside className="w-80 bg-white border-r border-slate-100 flex flex-col shadow-sm z-30">
         <div className="h-[70px] flex items-center px-8 border-b">
           <span className="font-bold text-[13px] tracking-[0.3em] text-slate-900 uppercase">İÇERİK MİMARI</span>
@@ -87,11 +87,10 @@ export default function UltimateSEOEditor() {
         </div>
       </aside>
 
-      {/* 2. ORTA: YAZIM ALANI */}
-      <main className="flex-1 bg-white overflow-y-auto relative px-4 scrollbar-hide">
+      {/* 2. ORTA: YAZIM ALANI (H1 REVİZE EDİLDİ) */}
+      <main className="flex-1 bg-white overflow-y-auto relative px-4 scrollbar-hide text-left">
         <div className="max-w-[850px] mx-auto py-12 px-12">
           
-          {/* BREADCRUMB (1 TIK BÜYÜTÜLDÜ) */}
           <nav className="flex items-center space-x-3 mb-8 border-b border-slate-50 pb-5">
             <span className="text-[14px] font-semibold text-slate-600 hover:text-slate-900 cursor-pointer transition-colors">Ana Sayfa</span>
             <span className="text-[12px] text-slate-300">/</span>
@@ -100,37 +99,46 @@ export default function UltimateSEOEditor() {
             <span className="text-[14px] font-bold text-slate-900 tracking-tight">Corian</span>
           </nav>
 
-          {/* MANŞET VE H1 SAYAÇLI ALAN */}
           <div className="space-y-4 mb-12">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-3">
                 <span className="inline-block px-3 py-1 bg-slate-900 text-white text-[10px] font-bold rounded-md uppercase tracking-widest">H1 Başlık</span>
                 <span className={`text-[10px] font-bold uppercase tracking-tighter ${h1Text.length >= 40 && h1Text.length <= 45 ? 'text-emerald-500' : 'text-slate-300'}`}>
-                  {h1Text.length >= 40 && h1Text.length <= 45 ? '✓ SEO Uyumlu' : 'Karakter Sayısı Hedef: 40-45'}
+                  {h1Text.length >= 40 && h1Text.length <= 45 ? '✓ SEO Tamam' : 'Hedef 40-45'}
                 </span>
               </div>
-              {/* SAYAÇ UYARISI */}
               <span className={`text-[11px] font-mono font-bold ${h1Text.length > 45 || (h1Text.length > 0 && h1Text.length < 40) ? 'text-red-500' : 'text-slate-400'}`}>
-                {h1Text.length} Karakter
+                {h1Text.length} / 45
               </span>
             </div>
             
-            <input 
+            {/* AKILLI H1 ALANI: 24px, Alt Satıra Geçer, Sağa Kaçmaz */}
+            <textarea 
               value={h1Text}
               onChange={(e) => setH1Text(e.target.value)}
-              className="w-full text-5xl font-bold border-none outline-none placeholder:text-slate-100 tracking-tight text-slate-900 bg-transparent py-2" 
-              placeholder="Başlık..." 
+              rows={1}
+              className="w-full text-[24px] font-bold border-none outline-none placeholder:text-slate-200 tracking-tight text-slate-900 bg-transparent py-1 resize-none overflow-hidden leading-tight"
+              placeholder="H1 Başlığınızı Buraya Yazın..."
+              onInput={(e) => {
+                const target = e.target as HTMLTextAreaElement;
+                target.style.height = 'auto';
+                target.style.height = target.scrollHeight + 'px';
+              }}
             />
             
             <textarea 
               className="w-full text-lg text-slate-400 border-none outline-none resize-none italic border-l-2 border-emerald-400 pl-6 bg-transparent leading-relaxed" 
               placeholder="SEO Giriş Özeti..." 
               rows={1} 
+              onInput={(e) => {
+                const target = e.target as HTMLTextAreaElement;
+                target.style.height = 'auto';
+                target.style.height = target.scrollHeight + 'px';
+              }}
             />
           </div>
 
-          {/* DİNAMİK BLOKLAR */}
-          <div className="space-y-8 pb-40">
+          <div className="space-y-8 pb-40 text-left">
             {blocks.map((block) => (
               <div key={block.id} className="relative group p-6 rounded-[2rem] hover:bg-slate-50/50 transition-all border border-transparent hover:border-slate-100 cursor-text">
                 <div className="absolute -top-4 left-8 opacity-0 group-hover:opacity-100 transition-all flex items-center bg-slate-900 text-white px-4 py-2 rounded-xl text-[10px] font-bold uppercase gap-4 z-40 shadow-2xl">
@@ -139,9 +147,27 @@ export default function UltimateSEOEditor() {
                 </div>
                 <div className="relative">
                   {block.type.includes('başlık') || block.type === 'h2' || block.type === 'h3' ? (
-                    <input className="w-full text-3xl font-bold text-slate-900 outline-none bg-transparent tracking-tight" placeholder={`${block.label}...`} />
+                    <textarea 
+                      rows={1}
+                      className="w-full text-2xl font-bold text-slate-900 outline-none bg-transparent tracking-tight resize-none overflow-hidden" 
+                      placeholder={`${block.label}...`}
+                      onInput={(e) => {
+                        const target = e.target as HTMLTextAreaElement;
+                        target.style.height = 'auto';
+                        target.style.height = target.scrollHeight + 'px';
+                      }}
+                    />
                   ) : (
-                    <textarea className="w-full text-base text-slate-600 outline-none bg-transparent resize-none leading-relaxed" placeholder={`${block.label} içeriği...`} rows={2} />
+                    <textarea 
+                      className="w-full text-base text-slate-600 outline-none bg-transparent resize-none leading-relaxed" 
+                      placeholder={`${block.label} içeriği...`} 
+                      rows={2} 
+                      onInput={(e) => {
+                        const target = e.target as HTMLTextAreaElement;
+                        target.style.height = 'auto';
+                        target.style.height = target.scrollHeight + 'px';
+                      }}
+                    />
                   )}
                 </div>
               </div>
@@ -150,7 +176,7 @@ export default function UltimateSEOEditor() {
         </div>
       </main>
 
-      {/* 3. SAĞ PANEL (MÜHÜRLÜ) */}
+      {/* 3. SAĞ PANEL (KORUNDU) */}
       <aside className="w-72 bg-white border-l border-slate-200 flex flex-col z-30">
         <div className="h-[70px] flex items-center justify-center border-b text-[10px] text-slate-400 font-bold uppercase tracking-widest">SEO Skor</div>
         <div className="p-8 space-y-6">
