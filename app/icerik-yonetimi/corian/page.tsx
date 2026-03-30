@@ -3,13 +3,13 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
-// --- TİPLER VE INTERFACELER ---
+// --- TİPLER ---
 interface Block {
   id: string;
   type: string;
   label: string;
   content: string;
-  level?: string; // H2, H3, H4 hiyerarşisi için
+  level?: string; 
 }
 
 interface MenuGroup {
@@ -24,8 +24,8 @@ export default function UltimateSEOEditor() {
   const [snippetText, setSnippetText] = useState('');
   const [introText, setIntroText] = useState('');
 
-  useEffect(() => {
-    setMounted(true);
+  useEffect(() => { 
+    setMounted(true); 
   }, []);
 
   if (!mounted) return null;
@@ -41,7 +41,7 @@ export default function UltimateSEOEditor() {
     target.style.height = target.scrollHeight + 'px';
   };
 
-  // --- BLOK YÖNETİMİ (MEKANİK) ---
+  // --- BLOK YÖNETİMİ ---
   const addBlock = (type: string, label: string) => {
     const newBlock: Block = {
       id: Math.random().toString(36).substring(2, 11),
@@ -57,14 +57,16 @@ export default function UltimateSEOEditor() {
     setBlocks((prev) => prev.filter(b => b.id !== id));
   };
 
+  const updateBlockContent = (id: string, newContent: string) => {
+    setBlocks(prev => prev.map(b => b.id === id ? { ...b, content: newContent } : b));
+  };
+
   const moveBlock = (index: number, direction: 'up' | 'down') => {
     const newBlocks = [...blocks];
     const targetIndex = direction === 'up' ? index - 1 : index + 1;
     
-    // Sınır kontrolü
     if (targetIndex < 0 || targetIndex >= newBlocks.length) return;
     
-    // Elemanları takas et (Swap)
     const temp = newBlocks[index];
     newBlocks[index] = newBlocks[targetIndex];
     newBlocks[targetIndex] = temp;
@@ -75,6 +77,10 @@ export default function UltimateSEOEditor() {
   const updateHeadingLevel = (id: string, newLevel: string) => {
     setBlocks(prev => prev.map(b => b.id === id ? { ...b, level: newLevel } : b));
   };
+
+  // --- İÇİNDEKİLER ZEKASI ---
+  // Sadece H2 olan ve içeriği dolu olan başlıkları yakalıyoruz
+  const h2Headings = blocks.filter(b => b.type === 'heading' && b.level === 'h2' && b.content.trim() !== '');
 
   const menuGroups: MenuGroup[] = [
     { title: 'Modeller', items: ['Hero', 'Slider'] },
@@ -91,12 +97,12 @@ export default function UltimateSEOEditor() {
   return (
     <div className="flex h-screen bg-[#F5F5F7] text-[#1D1D1F] font-sans overflow-hidden text-left">
       
-      {/* 1. SOL PANEL: NAVİGASYON */}
+      {/* 1. SOL PANEL */}
       <aside className="w-80 bg-white border-r border-slate-100 flex flex-col shadow-sm z-30">
         <div className="h-[70px] flex items-center px-8 border-b">
           <span className="font-bold text-[13px] tracking-[0.3em] text-slate-900 uppercase">İçerik Mimarı</span>
         </div>
-        <div className="flex-1 overflow-y-auto p-6 space-y-8 pb-20 scrollbar-hide text-left">
+        <div className="flex-1 overflow-y-auto p-6 space-y-8 pb-20 scrollbar-hide">
           {menuGroups.map((group) => (
             <div key={group.title} className="space-y-3">
               <p className="text-[12px] font-semibold text-slate-500 uppercase tracking-widest ml-1">{group.title}</p>
@@ -122,24 +128,24 @@ export default function UltimateSEOEditor() {
         </div>
       </aside>
 
-      {/* 2. ORTA: ANA YAZIM ALANI */}
-      <main className="flex-1 bg-white overflow-y-auto relative px-4 scrollbar-hide text-left">
+      {/* 2. ORTA: YAZIM ALANI */}
+      <main className="flex-1 bg-white overflow-y-auto relative px-4 scrollbar-hide">
         <div className="max-w-[850px] mx-auto py-12 px-12 text-left">
           
           <nav className="flex items-center space-x-3 mb-8 border-b border-slate-50 pb-5">
-            <span className="text-[14px] font-semibold text-slate-600 hover:text-slate-900 cursor-pointer transition-colors text-left">Ana Sayfa</span>
+            <span className="text-[14px] font-semibold text-slate-600 hover:text-slate-900 cursor-pointer transition-colors">Ana Sayfa</span>
             <span className="text-[12px] text-slate-300">/</span>
-            <span className="text-[14px] font-semibold text-slate-600 hover:text-slate-900 cursor-pointer transition-colors text-left">İçerik Yönetimi</span>
+            <span className="text-[14px] font-semibold text-slate-600 hover:text-slate-900 cursor-pointer transition-colors">İçerik Yönetimi</span>
             <span className="text-[12px] text-slate-300">/</span>
-            <span className="text-[14px] font-bold text-slate-900 tracking-tight text-left text-left">Corian</span>
+            <span className="text-[14px] font-bold text-slate-900 tracking-tight">Corian</span>
           </nav>
 
-          {/* H1 BAŞLIK BÖLÜMÜ */}
+          {/* H1 BAŞLIK */}
           <div className="space-y-4 mb-10 text-left">
             <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-4 text-left">
+              <div className="flex items-center gap-4">
                 <span className="inline-flex items-center px-3 py-1.5 bg-slate-900 text-white text-[11px] font-bold rounded-lg tracking-widest shadow-sm">
-                  H1 BAŞLIK
+                  H1 Başlık
                 </span>
                 <span className={`text-[13px] font-bold tracking-tight ${h1Text.length >= 50 && h1Text.length <= 60 ? 'text-emerald-600' : 'text-slate-600'}`}>
                   {h1Text.length >= 50 && h1Text.length <= 60 ? '✓ SEO Altın Oran' : 'Hedef: 50-60 Karakter'}
@@ -159,12 +165,11 @@ export default function UltimateSEOEditor() {
             />
           </div>
 
-          {/* SABİT SNIPPET VE GİRİŞ (SEO ODAKLI) */}
+          {/* SABİT SNIPPET VE GİRİŞ */}
           <div className="space-y-12 mb-8 border-b border-slate-50 pb-12 text-left">
-            {/* Snippet */}
-            <div className="space-y-4 text-left">
+            <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4 text-left text-left">
+                <div className="flex items-center gap-4">
                   <span className="inline-flex items-center px-3 py-1.5 bg-slate-900 text-white text-[11px] font-bold rounded-lg tracking-widest shadow-sm">Snippet Özet</span>
                   <span className={`text-[12px] font-bold ${countWords(snippetText) >= 35 && countWords(snippetText) <= 45 ? 'text-emerald-600' : 'text-slate-500'}`}>
                     {countWords(snippetText) >= 35 && countWords(snippetText) <= 45 ? '✓ SEO Tamam' : 'Hedef: 35-45 Kelime'}
@@ -182,10 +187,9 @@ export default function UltimateSEOEditor() {
               />
             </div>
 
-            {/* Giriş Paragrafı */}
-            <div className="space-y-4 text-left">
+            <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4 text-left">
+                <div className="flex items-center gap-4">
                   <span className="inline-flex items-center px-3 py-1.5 bg-slate-900 text-white text-[11px] font-bold rounded-lg tracking-widest shadow-sm">Giriş Paragrafı</span>
                   <span className={`text-[12px] font-bold ${countWords(introText) >= 50 && countWords(introText) <= 70 ? 'text-emerald-600' : 'text-slate-500'}`}>
                     {countWords(introText) >= 50 && countWords(introText) <= 70 ? '✓ SEO Tamam' : 'Hedef: 50-70 Kelime'}
@@ -204,14 +208,13 @@ export default function UltimateSEOEditor() {
             </div>
           </div>
 
-          {/* DİNAMİK BLOKLAR: BURASI MEKANİK ALAN */}
+          {/* DİNAMİK BLOKLAR (SWAP & TOC) */}
           <div className="space-y-8 pb-40 text-left">
             {blocks.map((block, index) => (
               <div key={block.id} className="relative group p-6 rounded-[2rem] hover:bg-slate-50/50 transition-all border border-transparent hover:border-slate-100 text-left">
                 
-                {/* TOOLBAR VE NAVİGASYON */}
+                {/* TOOLBAR */}
                 <div className="absolute -top-4 left-8 opacity-0 group-hover:opacity-100 transition-all flex items-center bg-slate-900 text-white px-4 py-2 rounded-xl text-[10px] font-bold gap-4 z-40 shadow-2xl">
-                  
                   {block.type === 'heading' ? (
                     <select 
                       value={block.level} 
@@ -226,29 +229,26 @@ export default function UltimateSEOEditor() {
                     <span className="text-emerald-400 tracking-widest uppercase">{block.label}</span>
                   )}
 
-                  {/* Hareket Okları */}
+                  {/* Taşıma Butonları (Mavi Oklar) */}
                   <div className="flex items-center gap-3 border-l border-white/10 pl-4">
                     <button 
                       onClick={() => moveBlock(index, 'up')}
                       className="text-sky-400 hover:text-sky-200 transition-colors cursor-pointer text-[15px] font-bold"
-                      title="Yukarı Taşı"
                     >
                       ↑
                     </button>
                     <button 
                       onClick={() => moveBlock(index, 'down')}
                       className="text-sky-400 hover:text-sky-200 transition-colors cursor-pointer text-[15px] font-bold"
-                      title="Aşağı Taşı"
                     >
                       ↓
                     </button>
                   </div>
 
-                  {/* Silme Butonu */}
                   <button 
                     type="button" 
                     onClick={() => deleteBlock(block.id)} 
-                    className="text-red-400 hover:text-red-200 border-l border-white/10 pl-4 transition-colors cursor-pointer"
+                    className="text-red-400 hover:text-red-200 border-l border-white/10 pl-4 transition-colors cursor-pointer uppercase"
                   >
                     Kaldır
                   </button>
@@ -256,28 +256,38 @@ export default function UltimateSEOEditor() {
                 
                 {/* BLOK İÇERİĞİ */}
                 {block.type === 'toc' ? (
-                  <div className="bg-[#F8F9FA] rounded-2xl p-8 border-l-4 border-slate-900 text-left">
-                    <p className="text-[13px] font-bold text-slate-900 uppercase tracking-[0.2em] mb-6">İçindekiler</p>
-                    <ul className="space-y-3">
-                      <li className="flex items-center gap-3 text-slate-500 text-[15px] font-medium hover:text-slate-900 cursor-default">
-                        <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full"></span>
-                        Başlıklar Otomatik Listelenir...
-                      </li>
-                    </ul>
+                  <div className={`bg-[#F8F9FA] rounded-2xl p-8 border-l-4 border-slate-900 transition-all duration-500 ${h2Headings.length < 2 ? 'opacity-40 grayscale pointer-events-none' : 'opacity-100'}`}>
+                    <p className="text-[13px] font-bold text-slate-900 tracking-[0.2em] mb-6 uppercase">İçindekiler</p>
+                    {h2Headings.length >= 2 ? (
+                      <ul className="space-y-4">
+                        {h2Headings.map((h, i) => (
+                          <li key={h.id} className="flex items-center gap-4 text-slate-600 text-[15px] font-medium group/item cursor-pointer hover:text-slate-900 transition-all">
+                            <span className="flex items-center justify-center w-6 h-6 bg-slate-900 text-white text-[10px] rounded-full font-bold">{i + 1}</span>
+                            <span className="border-b border-transparent group-hover/item:border-slate-300">{h.content}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-slate-400 text-[13px] italic">Otomatik tablo için en az 2 adet H2 başlık doldurmalısınız.</p>
+                    )}
                   </div>
                 ) : (
                   <div className="relative text-left">
                     {block.type === 'heading' ? (
                       <textarea 
+                        value={block.content}
+                        onChange={(e) => updateBlockContent(block.id, e.target.value)}
                         rows={1} 
                         onInput={autoResize} 
                         className={`w-full font-bold text-slate-900 outline-none bg-transparent tracking-tight resize-none overflow-hidden text-left transition-all duration-300 ${
                           block.level === 'h2' ? 'text-3xl' : block.level === 'h3' ? 'text-2xl' : 'text-xl'
                         }`} 
-                        placeholder={`${block.level?.toUpperCase()} başlığı yazın...`} 
+                        placeholder={`${block.level?.toUpperCase()} başlığını yazın...`} 
                       />
                     ) : (
                       <textarea 
+                        value={block.content}
+                        onChange={(e) => updateBlockContent(block.id, e.target.value)}
                         className="w-full text-base text-slate-600 outline-none bg-transparent resize-none leading-relaxed text-left" 
                         placeholder={`${block.label} içeriği...`} 
                         rows={1} 
@@ -292,14 +302,12 @@ export default function UltimateSEOEditor() {
         </div>
       </main>
 
-      {/* 3. SAĞ PANEL: SKORLAMA */}
-      <aside className="w-72 bg-white border-l border-slate-200 flex flex-col z-30 text-left">
-        <div className="h-[70px] flex items-center justify-center border-b text-[10px] text-slate-400 font-bold uppercase tracking-widest text-center">
-          SEO Analiz
-        </div>
+      {/* 3. SAĞ PANEL */}
+      <aside className="w-72 bg-white border-l border-slate-200 flex flex-col z-30">
+        <div className="h-[70px] flex items-center justify-center border-b text-[10px] text-slate-400 font-bold uppercase tracking-widest text-center">SEO Analiz</div>
         <div className="p-8 space-y-6">
            <div className="aspect-square bg-slate-900 rounded-[3.5rem] flex flex-col items-center justify-center text-white shadow-xl">
-              <span className="text-[9px] font-bold opacity-40 uppercase tracking-widest mb-1 text-center text-center">Genel Skor</span>
+              <span className="text-[9px] font-bold opacity-40 uppercase tracking-widest mb-1 text-center">Genel Skor</span>
               <span className="text-7xl font-bold italic">
                 {Math.min(
                   blocks.length * 5 + 
@@ -310,12 +318,9 @@ export default function UltimateSEOEditor() {
                 )}
               </span>
            </div>
-           <button className="w-full bg-slate-900 text-white py-5 rounded-2xl text-[11px] font-bold tracking-widest uppercase hover:bg-emerald-600 transition-all duration-300 cursor-pointer shadow-lg active:scale-95">
-             Kaydet
-           </button>
+           <button className="w-full bg-slate-900 text-white py-5 rounded-2xl text-[11px] font-bold tracking-widest uppercase hover:bg-emerald-600 transition-all duration-300 cursor-pointer shadow-lg active:scale-95">Kaydet</button>
         </div>
       </aside>
-
     </div>
   );
 }
