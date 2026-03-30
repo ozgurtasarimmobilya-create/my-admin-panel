@@ -54,24 +54,24 @@ export default function UltimateSEOEditor() {
   ];
 
   return (
-    <div className="flex h-screen bg-[#F5F5F7] text-[#1D1D1F] font-sans overflow-hidden">
+    <div className="flex h-screen bg-[#F5F5F7] text-[#1D1D1F] font-sans overflow-hidden text-left">
       
       {/* 1. SOL PANEL (KORUNDU) */}
       <aside className="w-80 bg-white border-r border-slate-100 flex flex-col shadow-sm z-30">
         <div className="h-[70px] flex items-center px-8 border-b">
           <span className="font-bold text-[13px] tracking-[0.3em] text-slate-900 uppercase">İÇERİK MİMARI</span>
         </div>
-        <div className="flex-1 overflow-y-auto p-6 space-y-8 pb-20 scrollbar-hide">
+        <div className="flex-1 overflow-y-auto p-6 space-y-8 pb-20 scrollbar-hide text-left">
           {menuGroups.map((group) => (
             <div key={group.title} className="space-y-3">
               <p className="text-[12px] font-semibold text-slate-500 uppercase tracking-widest ml-1">{group.title}</p>
-              <div className="flex flex-wrap gap-1.5">
+              <div className="flex flex-wrap gap-1.5 text-left">
                 {group.items.map((item) => (
                   <button
                     key={item}
                     type="button"
                     onClick={() => addBlock(item.toLowerCase(), item)}
-                    className="inline-flex items-center px-4 py-2 bg-[#F5F5F7] text-[#1D1D1F] border border-transparent rounded-lg text-[13px] font-medium hover:bg-[#E8E8ED] hover:border-slate-300 transition-all duration-300 whitespace-nowrap active:scale-95 cursor-pointer"
+                    className="inline-flex items-center px-4 py-2 bg-[#F5F5F7] text-[#1D1D1F] border border-transparent rounded-lg text-[13px] font-medium hover:bg-[#E8E8ED] hover:border-slate-300 transition-all duration-300 whitespace-nowrap active:scale-95 cursor-pointer text-left"
                   >
                     {item}
                   </button>
@@ -80,16 +80,16 @@ export default function UltimateSEOEditor() {
             </div>
           ))}
         </div>
-        <div className="p-6 border-t bg-white text-center">
+        <div className="p-6 border-t bg-white">
           <Link href="/icerik-yonetimi" className="flex items-center justify-center w-full py-3 bg-slate-50 border border-slate-200 text-slate-900 rounded-xl font-bold text-[12px] tracking-widest hover:bg-red-50 hover:text-red-600 transition-all duration-300 uppercase cursor-pointer">
             Sistemden Ayrıl
           </Link>
         </div>
       </aside>
 
-      {/* 2. ORTA: YAZIM ALANI */}
-      <main className="flex-1 bg-white overflow-y-auto relative px-4 scrollbar-hide">
-        <div className="max-w-[850px] mx-auto py-12 px-12">
+      {/* 2. ORTA: YAZIM ALANI (GÜNCEL SEO HEDEFLERİ) */}
+      <main className="flex-1 bg-white overflow-y-auto relative px-4 scrollbar-hide text-left">
+        <div className="max-w-[850px] mx-auto py-12 px-12 text-left">
           
           <nav className="flex items-center space-x-3 mb-8 border-b border-slate-50 pb-5">
             <span className="text-[14px] font-semibold text-slate-600 hover:text-slate-900 cursor-pointer transition-colors">Ana Sayfa</span>
@@ -99,19 +99,19 @@ export default function UltimateSEOEditor() {
             <span className="text-[14px] font-bold text-slate-900 tracking-tight">Corian</span>
           </nav>
 
-          <div className="space-y-4 mb-12">
-            {/* ÜST GÖSTERGELER: 2 TIK BÜYÜTÜLDÜ VE RENK BELİRGİNLEŞTİ */}
+          <div className="space-y-4 mb-12 text-left">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-4">
                 <span className="inline-flex items-center px-3 py-1.5 bg-slate-900 text-white text-[11px] font-bold rounded-lg uppercase tracking-widest shadow-sm">
                   H1 Başlık
                 </span>
-                <span className={`text-[12px] font-bold uppercase tracking-tight ${h1Text.length >= 40 && h1Text.length <= 45 ? 'text-emerald-600' : 'text-slate-500'}`}>
-                  {h1Text.length >= 40 && h1Text.length <= 45 ? '✓ SEO Tamam' : 'Hedef: 40-45 Karakter'}
+                {/* 50-60 Karakter Hedefi Güncellendi */}
+                <span className={`text-[12px] font-bold tracking-tight ${h1Text.length >= 50 && h1Text.length <= 60 ? 'text-emerald-600' : 'text-slate-500'}`}>
+                  {h1Text.length >= 50 && h1Text.length <= 60 ? '✓ SEO Altın Oran' : 'Hedef: 50-60 Karakter'}
                 </span>
               </div>
-              <span className={`text-[13px] font-mono font-bold px-3 py-1 rounded-md ${h1Text.length > 45 || (h1Text.length > 0 && h1Text.length < 40) ? 'text-red-600 bg-red-50' : 'text-slate-600 bg-slate-50'}`}>
-                {h1Text.length} / 45
+              <span className={`text-[13px] font-mono font-bold px-3 py-1 rounded-md ${h1Text.length > 60 || (h1Text.length > 0 && h1Text.length < 50) ? 'text-red-600 bg-red-50' : 'text-slate-600 bg-slate-50'}`}>
+                {h1Text.length} / 60
               </span>
             </div>
             
@@ -119,8 +119,8 @@ export default function UltimateSEOEditor() {
               value={h1Text}
               onChange={(e) => setH1Text(e.target.value)}
               rows={1}
-              className="w-full text-[24px] font-bold border-none outline-none placeholder:text-slate-200 tracking-tight text-slate-900 bg-transparent py-1 resize-none overflow-hidden leading-tight"
-              placeholder="Başlık buraya gelecek..."
+              className="w-full text-[24px] font-bold border-none outline-none placeholder:text-slate-300 tracking-tight text-slate-900 bg-transparent py-1 resize-none overflow-hidden leading-tight text-left"
+              placeholder="DuPont Corian Nedir? Özellikleri ve Kullanım Alanları"
               onInput={(e) => {
                 const target = e.target as HTMLTextAreaElement;
                 target.style.height = 'auto';
@@ -129,8 +129,8 @@ export default function UltimateSEOEditor() {
             />
             
             <textarea 
-              className="w-full text-lg text-slate-400 border-none outline-none resize-none italic border-l-2 border-emerald-400 pl-6 bg-transparent leading-relaxed" 
-              placeholder="SEO Giriş Özeti..." 
+              className="w-full text-lg text-slate-400 border-none outline-none resize-none italic border-l-2 border-emerald-400 pl-6 bg-transparent leading-relaxed text-left" 
+              placeholder="Google sonuçlarında görünecek meta açıklamasını buraya girin (İdeal: 150 Karakter)..." 
               rows={1} 
               onInput={(e) => {
                 const target = e.target as HTMLTextAreaElement;
@@ -140,18 +140,19 @@ export default function UltimateSEOEditor() {
             />
           </div>
 
-          <div className="space-y-8 pb-40">
+          {/* DİNAMİK BLOKLAR (AYNI KALDI) */}
+          <div className="space-y-8 pb-40 text-left">
             {blocks.map((block) => (
-              <div key={block.id} className="relative group p-6 rounded-[2rem] hover:bg-slate-50/50 transition-all border border-transparent hover:border-slate-100 cursor-text">
+              <div key={block.id} className="relative group p-6 rounded-[2rem] hover:bg-slate-50/50 transition-all border border-transparent hover:border-slate-100 cursor-text text-left">
                 <div className="absolute -top-4 left-8 opacity-0 group-hover:opacity-100 transition-all flex items-center bg-slate-900 text-white px-4 py-2 rounded-xl text-[10px] font-bold uppercase gap-4 z-40 shadow-2xl">
                   <span className="text-emerald-400 tracking-widest">{block.label}</span>
                   <button type="button" onClick={() => deleteBlock(block.id)} className="text-red-400 hover:text-red-200 cursor-pointer border-l border-white/10 pl-4 font-bold">Kaldır</button>
                 </div>
-                <div className="relative">
+                <div className="relative text-left">
                   {block.type.includes('başlık') || block.type === 'h2' || block.type === 'h3' ? (
                     <textarea 
                       rows={1}
-                      className="w-full text-2xl font-bold text-slate-900 outline-none bg-transparent tracking-tight resize-none overflow-hidden" 
+                      className="w-full text-2xl font-bold text-slate-900 outline-none bg-transparent tracking-tight resize-none overflow-hidden text-left" 
                       placeholder={`${block.label}...`}
                       onInput={(e) => {
                         const target = e.target as HTMLTextAreaElement;
@@ -161,7 +162,7 @@ export default function UltimateSEOEditor() {
                     />
                   ) : (
                     <textarea 
-                      className="w-full text-base text-slate-600 outline-none bg-transparent resize-none leading-relaxed" 
+                      className="w-full text-base text-slate-600 outline-none bg-transparent resize-none leading-relaxed text-left" 
                       placeholder={`${block.label} içeriği...`} 
                       rows={2} 
                       onInput={(e) => {
@@ -178,13 +179,14 @@ export default function UltimateSEOEditor() {
         </div>
       </main>
 
-      {/* 3. SAĞ PANEL (KORUNDU) */}
+      {/* 3. SAĞ PANEL (SKOR HESAPLAMASI GÜNCELLENDİ) */}
       <aside className="w-72 bg-white border-l border-slate-200 flex flex-col z-30">
-        <div className="h-[70px] flex items-center justify-center border-b text-[10px] text-slate-400 font-bold uppercase tracking-widest">SEO Skor</div>
+        <div className="h-[70px] flex items-center justify-center border-b text-[10px] text-slate-400 font-bold uppercase tracking-widest text-center">SEO Analiz</div>
         <div className="p-8 space-y-6">
            <div className="aspect-square bg-slate-900 rounded-[3.5rem] flex flex-col items-center justify-center text-white shadow-xl">
               <span className="text-[9px] font-bold opacity-40 uppercase tracking-widest mb-1">Skor</span>
-              <span className="text-7xl font-bold italic">{Math.min(blocks.length * 10 + (h1Text.length >= 40 && h1Text.length <= 45 ? 20 : 0), 100)}</span>
+              {/* Skor artık 50-60 karakter uyarısına bağlı */}
+              <span className="text-7xl font-bold italic">{Math.min(blocks.length * 10 + (h1Text.length >= 50 && h1Text.length <= 60 ? 20 : 0), 100)}</span>
            </div>
            <button className="w-full bg-slate-900 text-white py-5 rounded-2xl text-[11px] font-bold tracking-widest uppercase hover:bg-emerald-600 transition-all duration-300 cursor-pointer shadow-lg active:scale-95">Kaydet</button>
         </div>
