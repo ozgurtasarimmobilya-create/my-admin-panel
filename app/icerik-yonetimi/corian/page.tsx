@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
-// Tip tanımlamaları (TypeScript kırmızılığını bitiren kısım)
+// Tip tanımlamaları
 interface Block {
   id: string;
   type: string;
@@ -55,27 +55,27 @@ export default function UltimateSEOEditor() {
   return (
     <div className="flex h-screen bg-[#F5F5F7] text-[#1D1D1F] font-sans overflow-hidden">
       
-      {/* SOL PANEL: APPLE FERAH CEPHANELİK */}
+      {/* SOL PANEL: YAZILAR 2 TIK BÜYÜTÜLDÜ */}
       <aside className="w-80 bg-white border-r border-slate-100 flex flex-col shadow-sm z-30">
         <div className="h-[70px] flex items-center px-8 border-b">
-          <span className="font-bold text-[11px] tracking-[0.3em] text-slate-900 uppercase">İÇERİK MİMARI</span>
+          <span className="font-bold text-[13px] tracking-[0.3em] text-slate-900 uppercase">İÇERİK MİMARI</span>
         </div>
 
         <div className="flex-1 overflow-y-auto p-6 space-y-8 pb-20 scrollbar-hide">
           {menuGroups.map((group) => (
             <div key={group.title} className="space-y-3">
-              {/* Fare Grisi Başlık */}
-              <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest ml-1">
+              {/* Fare Grisi Başlık - 2 tık büyütüldü (10px -> 12px) */}
+              <p className="text-[12px] font-semibold text-slate-500 uppercase tracking-widest ml-1">
                 {group.title}
               </p>
-              {/* Float-Left Mantığı (Flex Wrap) */}
               <div className="flex flex-wrap gap-1.5">
                 {group.items.map((item) => (
                   <button
                     key={item}
                     type="button"
                     onClick={() => addBlock(item.toLowerCase(), item)}
-                    className="inline-flex items-center px-3 py-1.5 bg-[#F5F5F7] text-[#1D1D1F] border border-transparent rounded-lg text-[11px] font-medium hover:bg-[#E8E8ED] hover:border-slate-300 transition-all whitespace-nowrap active:scale-95"
+                    // Buton yazıları - 2 tık büyütüldü (11px -> 13px)
+                    className="inline-flex items-center px-4 py-2 bg-[#F5F5F7] text-[#1D1D1F] border border-transparent rounded-lg text-[13px] font-medium hover:bg-[#E8E8ED] hover:border-slate-300 transition-all whitespace-nowrap active:scale-95"
                   >
                     {item}
                   </button>
@@ -86,13 +86,13 @@ export default function UltimateSEOEditor() {
         </div>
 
         <div className="p-6 border-t bg-white">
-          <Link href="/icerik-yonetimi" className="flex items-center justify-center w-full py-3 bg-slate-50 border border-slate-200 text-slate-900 rounded-xl font-bold text-[10px] tracking-widest hover:bg-red-50 hover:text-red-600 transition-all uppercase">
+          <Link href="/icerik-yonetimi" className="flex items-center justify-center w-full py-3 bg-slate-50 border border-slate-200 text-slate-900 rounded-xl font-bold text-[12px] tracking-widest hover:bg-red-50 hover:text-red-600 transition-all uppercase">
             Sistemden Ayrıl
           </Link>
         </div>
       </aside>
 
-      {/* ORTA: YAZIM ALANI */}
+      {/* ORTA: YAZIM ALANI (DOKUNULMADI) */}
       <main className="flex-1 bg-white overflow-y-auto relative px-4 scrollbar-hide">
         <div className="max-w-[800px] mx-auto py-24 px-12">
           
@@ -128,7 +128,7 @@ export default function UltimateSEOEditor() {
         </div>
       </main>
 
-      {/* SAĞ: SEO ANALİZ */}
+      {/* SAĞ: SEO ANALİZ (DOKUNULMADI) */}
       <aside className="w-72 bg-white border-l border-slate-200 flex flex-col z-30">
         <div className="h-[70px] flex items-center justify-center border-b text-[10px] text-slate-400 font-bold uppercase tracking-widest">SEO Canlı Skor</div>
         <div className="p-8 space-y-6">
