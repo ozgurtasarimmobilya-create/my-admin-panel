@@ -10,181 +10,153 @@ interface Section {
   c: string;
 }
 
-export default function SEOProTerminal() {
-  // State Yönetimi
+export default function SEOProWorkspace() {
   const [title, setTitle] = useState('');
   const [desc, setDesc] = useState('');
-  const [keyword, setKeyword] = useState(''); // Anahtar Kelime Takibi
   const [h1, setH1] = useState({ t: '', c: '' });
   const [sections, setSections] = useState<Section[]>([{ id: 's1', type: 'h2', t: '', c: '' }]);
+  const [scrollProgress, setScrollProgress] = useState(0);
 
-  // SEO Analiz Yardımcıları
+  // İlerleme Çubuğu Takibi
+  useEffect(() => {
+    const updateScroll = () => {
+      const current = window.scrollY;
+      const total = document.body.scrollHeight - window.innerHeight;
+      setScrollProgress((current / total) * 100);
+    };
+    window.addEventListener('scroll', updateScroll);
+    return () => window.removeEventListener('scroll', updateScroll);
+  }, []);
+
   const getWordCount = (text: string) => text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
-  const hasKeyword = (text: string) => keyword && text.toLowerCase().includes(keyword.toLowerCase());
 
-  // Yoast Tarzı Puanlama (Traffic Light)
-  const getScore = () => {
-    let score = 0;
-    if (title.length >= 40 && title.length <= 45) score += 25;
-    if (desc.length >= 140 && desc.length <= 145) score += 25;
-    if (hasKeyword(h1.t)) score += 25;
-    if (getWordCount(sections.reduce((acc, s) => acc + s.c, '')) > 600) score += 25;
-    return score;
+  const addSection = (type: Section['type']) => {
+    setSections([...sections, { id: `s-${Date.now()}`, type, t: '', c: '' }]);
   };
 
-  const addSection = (type: Section['type'], index: number) => {
-    const updated = [...sections];
-    updated.splice(index + 1, 0, { id: `s-${Date.now()}`, type, t: '', c: '' });
-    setSections(updated);
+  const updateSection = (id: string, key: 't' | 'c', value: string) => {
+    setSections(sections.map(s => s.id === id ? { ...s, [key]: value } : s));
   };
 
   return (
-    <div className="flex h-screen bg-[#0F172A] text-[#E2E8F0] overflow-hidden font-sans">
+    <div className="min-h-screen bg-[#FDFDFD] text-[#333] font-sans flex overflow-x-hidden">
       
-      {/* 1. SOL: NAVİGASYON & İSKELET */}
-      <aside className="w-72 bg-[#1E293B] border-r border-[#334155] p-6 flex flex-col shadow-2xl">
-        <div className="mb-8">
-          <h2 className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-2">Özgür Tasarım SEO Pro</h2>
-          <div className="h-1 w-12 bg-blue-500 rounded"></div>
+      {/* 1. SABİT ÜST İLERLEME ÇUBUĞU */}
+      <div className="fixed top-0 left-0 h-1 bg-[#2F4F4F] z-[100] transition-all duration-75 shadow-sm" style={{ width: `${scrollProgress}%` }}></div>
+
+      {/* 2. SOL PANEL: ELEMENT EKLEME (SABİT) */}
+      <aside className="fixed left-0 top-0 w-64 h-full bg-[#F8F9FA] border-r border-gray-200 p-6 z-50 flex flex-col gap-6">
+        <div className="pb-4 border-b">
+          <h2 className="text-[10px] font-black tracking-widest text-gray-400 uppercase">Bloklar</h2>
+        </div>
+        <div className="flex flex-col gap-3">
+          <button onClick={() => addSection('h2')} className="text-left px-4 py-3 bg-white border border-gray-200 rounded-lg text-xs font-bold hover:border-[#2F4F4F] transition-all shadow-sm">H2 Başlığı Ekle</button>
+          <button onClick={() => addSection('h3')} className="text-left px-4 py-3 bg-white border border-gray-200 rounded-lg text-xs font-bold hover:border-[#2F4F4F] transition-all shadow-sm">H3 Alt Başlık Ekle</button>
+          <button onClick={() => addSection('sss')} className="text-left px-4 py-3 bg-white border border-gray-200 rounded-lg text-xs font-bold hover:border-[#2F4F4F] transition-all shadow-sm">Sıkça Sorulan Sorular</button>
+          <button onClick={() => addSection('line')} className="text-left px-4 py-3 bg-white border border-gray-200 rounded-lg text-xs font-bold hover:border-[#2F4F4F] transition-all shadow-sm">Ayırıcı Çizgi</button>
         </div>
         
-        <div className="flex-1 overflow-y-auto space-y-4">
-          <h3 className="text-[10px] font-bold text-gray-500 uppercase">İçerik Mimarisi</h3>
-          {sections.filter(s => s.t).map((s, i) => (
-            <div key={s.id} className="group flex items-center gap-3 text-xs p-2 hover:bg-[#334155] rounded-lg transition-all cursor-pointer border-l-2 border-transparent hover:border-blue-500">
-              <span className="text-blue-500/50 font-mono italic">H{s.type.slice(1)}</span>
-              <span className="truncate opacity-70 group-hover:opacity-100">{s.t}</span>
-            </div>
-          ))}
+        <div className="mt-auto">
+          <Link href="/icerik-yonetimi" className="text-[10px] font-bold text-gray-400 hover:text-black">← ÇIKIŞ YAP</Link>
         </div>
-
-        <Link href="/icerik-yonetimi" className="mt-auto text-[10px] font-bold py-3 text-center border border-[#334155] rounded-xl hover:bg-white hover:text-black transition-all uppercase">← Paneli Kapat</Link>
       </aside>
 
-      {/* 2. ORTA: ANA EDİTÖR (GHOST UI) */}
-      <main className="flex-1 overflow-y-auto bg-[#0F172A] custom-scrollbar px-12 py-16 relative">
-        <div className="max-w-3xl mx-auto space-y-20 pb-40">
-          
-          {/* H1 Giriş */}
-          <div className="space-y-6">
-            <div className="flex items-center gap-4 text-[10px] font-bold opacity-30">
-              <span className="bg-white text-black px-2 py-0.5 rounded">H1</span>
-              <span>Karakter: {h1.t.length} / 70</span>
-            </div>
+      {/* 3. ORTA PANEL: İÇERİK ALANI (SCROLL) */}
+      <main className="flex-1 ml-64 mr-[350px] p-16 max-w-4xl mx-auto min-h-screen">
+        <div className="space-y-12">
+          {/* H1 Alanı */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 opacity-30 text-[10px] font-bold">H1 BAŞLIK <span className={h1.t.length > 70 ? 'text-red-500' : ''}>({h1.t.length}/70)</span></div>
             <textarea 
               value={h1.t} 
               onChange={(e) => setH1({...h1, t: e.target.value})}
-              className="w-full text-6xl font-black bg-transparent border-none outline-none resize-none placeholder:text-gray-800 leading-[1.1] tracking-tighter" 
-              placeholder="Odak Başlığı Girin"
-              rows={2}
+              className="w-full text-4xl font-bold bg-transparent border-none outline-none resize-none placeholder:text-gray-200" 
+              placeholder="Ana Başlığı Buraya Yazın..."
+              rows={1}
             />
             <textarea 
               value={h1.c} 
               onChange={(e) => setH1({...h1, c: e.target.value})}
-              className="w-full p-6 bg-[#1E293B]/50 rounded-3xl text-lg text-gray-400 border border-[#334155] outline-none h-32 leading-relaxed italic" 
-              placeholder="SEO snippet: Kullanıcıyı içeriğe çekecek ilk 200 kelimelik giriş..."
+              className="w-full p-0 text-lg text-gray-500 bg-transparent border-none outline-none resize-none leading-relaxed italic" 
+              placeholder="Giriş / Snippet paragrafı..."
+              rows={2}
             />
           </div>
 
-          {/* Dinamik Bloklar */}
-          <div className="space-y-12">
+          <div className="h-px bg-gray-100"></div>
+
+          {/* Dinamik Bölümler */}
+          <div className="space-y-10">
             {sections.map((sec, i) => (
-              <div key={sec.id} className="relative group p-8 rounded-[2.5rem] border-2 border-transparent hover:border-[#334155] transition-all bg-[#1E293B]/20">
-                
-                {/* Aksiyon Butonları (Hover) */}
-                <div className="absolute -right-4 top-1/2 -translate-y-1/2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all">
-                  <button onClick={() => setSections(sections.filter(s => s.id !== sec.id))} className="bg-red-500/20 text-red-500 p-2 rounded-full hover:bg-red-500 hover:text-white transition-all text-xs">×</button>
-                </div>
-
-                <div className="flex justify-between mb-6">
-                  <span className={`text-[9px] font-black px-2 py-1 rounded ${sec.type === 'h2' ? 'bg-blue-600' : 'bg-[#334155]'}`}>{sec.type.toUpperCase()}</span>
-                  <div className="flex gap-4 opacity-40 text-[9px] font-mono font-bold uppercase">
-                    <span>Karakter: {sec.t.length}</span>
-                    <span>Kelimeler: {getWordCount(sec.c)}</span>
+              <div key={sec.id} className="relative group">
+                {sec.type === 'line' ? (
+                  <div className="h-px bg-gray-100 my-10 relative">
+                    <button onClick={() => setSections(sections.filter(s => s.id !== sec.id))} className="absolute right-0 -top-3 opacity-0 group-hover:opacity-100 text-[10px] text-red-500 font-bold">SİL</button>
                   </div>
-                </div>
-
-                <input 
-                  type="text" 
-                  value={sec.t} 
-                  onChange={(e) => setSections(sections.map(s => s.id === sec.id ? {...s, t: e.target.value} : s))}
-                  className="w-full bg-transparent border-b border-[#334155] mb-6 pb-2 text-2xl font-bold outline-none focus:border-blue-500" 
-                  placeholder="Başlık girin..."
-                />
-                <textarea 
-                  value={sec.c} 
-                  onChange={(e) => setSections(sections.map(s => s.id === sec.id ? {...s, c: e.target.value} : s))}
-                  className="w-full bg-transparent text-gray-400 text-sm leading-[1.8] outline-none min-h-[150px] resize-none" 
-                  placeholder="Zengin içerik alanı..."
-                />
-
-                {/* Bölüm Ekleme (Hover) */}
-                <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 flex gap-2 opacity-0 group-hover:opacity-100 transition-all">
-                  {['h2', 'h3', 'sss', 'line'].map(t => (
-                    <button key={t} onClick={() => addSection(t as any, i)} className="bg-white text-black text-[9px] font-black px-4 py-2 rounded-full hover:bg-blue-500 hover:text-white uppercase transition-all shadow-xl">
-                      + {t}
-                    </button>
-                  ))}
-                </div>
+                ) : (
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center text-[10px] font-black opacity-20 uppercase tracking-tighter">
+                      <span>{sec.type} BÖLÜMÜ / Kelime: {getWordCount(sec.c)}</span>
+                      <button onClick={() => setSections(sections.filter(s => s.id !== sec.id))} className="opacity-0 group-hover:opacity-100 text-red-500">Kaldır</button>
+                    </div>
+                    <input 
+                      type="text" 
+                      value={sec.t} 
+                      onChange={(e) => updateSection(sec.id, 't', e.target.value)}
+                      className={`w-full font-bold bg-transparent border-none outline-none focus:border-b focus:border-gray-100 pb-1 ${sec.type === 'h2' ? 'text-2xl' : 'text-xl'}`}
+                      placeholder={sec.type === 'sss' ? 'Soru yazın...' : 'Başlık yazın...'}
+                    />
+                    <textarea 
+                      value={sec.c} 
+                      onChange={(e) => updateSection(sec.id, 'c', e.target.value)}
+                      className="w-full text-base leading-relaxed text-gray-600 bg-transparent border-none outline-none resize-none min-h-[50px]"
+                      placeholder="Buraya yazmaya başlayın..."
+                      rows={4}
+                    />
+                  </div>
+                )}
               </div>
             ))}
           </div>
         </div>
       </main>
 
-      {/* 3. SAĞ: SEO ANALİZ & ÖNİZLEME */}
-      <aside className="w-[400px] bg-[#1E293B] border-l border-[#334155] p-8 overflow-y-auto space-y-10">
+      {/* 4. SAĞ PANEL: SEO DENETİM (SABİT) */}
+      <aside className="fixed right-0 top-0 w-[350px] h-full bg-white border-l border-gray-200 p-8 z-50 flex flex-col gap-10">
+        <h2 className="text-[10px] font-black uppercase text-gray-400 tracking-[0.2em] border-b pb-4">SEO Denetim</h2>
         
-        {/* Google Önizleme (Mockup) */}
-        <section className="space-y-4">
-          <h3 className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Google Önizleme</h3>
-          <div className="bg-white p-4 rounded-xl shadow-inner space-y-1">
-            <div className="text-[11px] text-[#202124] flex items-center gap-1">ozgurtasarim.com.tr <span className="text-[10px] opacity-50">▼</span></div>
-            <div className="text-xl text-[#1a0dab] font-normal leading-tight hover:underline cursor-pointer truncate">
-              {title || "Sayfa Başlığı Buraya Gelecek"}
-            </div>
-            <div className="text-sm text-[#4d5156] leading-snug line-clamp-2">
-              {desc || "Arama sonuçlarında görünecek olan meta açıklama metni burada listelenecek..."}
-            </div>
+        {/* Google Snippet (Sade) */}
+        <div className="space-y-4">
+          <span className="text-[10px] font-bold text-gray-400">GOOGLE GÖRÜNÜMÜ</span>
+          <div className="space-y-1">
+            <div className="text-sm text-blue-700 truncate">{title || "SEO Başlığı Henüz Girilmedi"}</div>
+            <div className="text-xs text-green-700 truncate">https://ozgurtasarim.com.tr › corian</div>
+            <div className="text-xs text-gray-500 line-clamp-2">{desc || "Meta açıklaması buraya gelecek..."}</div>
           </div>
-        </section>
+        </div>
 
-        {/* SEO Puanı (Progress Bar) */}
-        <section className="space-y-4 border-t border-[#334155] pt-8 text-center">
-          <h3 className="text-[10px] font-black text-gray-500 uppercase">SEO Sağlık Skoru</h3>
-          <div className="relative w-24 h-24 mx-auto flex items-center justify-center">
-             <svg className="w-full h-full transform -rotate-90">
-               <circle cx="48" cy="48" r="40" stroke="#334155" strokeWidth="8" fill="transparent" />
-               <circle cx="48" cy="48" r="40" stroke={getScore() > 70 ? "#10B981" : "#F59E0B"} strokeWidth="8" fill="transparent" strokeDasharray={251} strokeDashoffset={251 - (251 * getScore()) / 100} className="transition-all duration-1000" />
-             </svg>
-             <span className="absolute text-2xl font-black italic">%{getScore()}</span>
-          </div>
-        </section>
-
-        {/* SEO Metrikleri */}
-        <section className="space-y-6">
+        {/* Sayaçlar (İşlevsel) */}
+        <div className="space-y-6">
           <div className="space-y-2">
-            <div className="flex justify-between text-[10px] font-bold uppercase"><span>Odak Kelime</span></div>
-            <input value={keyword} onChange={(e) => setKeyword(e.target.value)} className="w-full bg-[#0F172A] p-3 rounded-lg border border-[#334155] text-xs outline-none" placeholder="Örn: Corian" />
+            <div className="flex justify-between text-[10px] font-black"><span>SEO BAŞLIK (40-45)</span> <span className={title.length > 45 ? 'text-red-500' : ''}>{title.length}</span></div>
+            <input value={title} onChange={(e) => setTitle(e.target.value)} className={`w-full p-3 bg-gray-50 border rounded-lg text-xs outline-none focus:border-black transition-colors ${title.length >= 40 && title.length <= 45 ? 'bg-green-50 border-green-200' : ''}`} />
           </div>
 
-          <div className="space-y-4">
-            <div className={`p-4 rounded-xl border text-[11px] font-bold transition-all ${title.length >= 40 && title.length <= 45 ? 'bg-green-500/10 border-green-500 text-green-500' : 'bg-pink-500/10 border-pink-500 text-pink-500'}`}>
-               {title.length >= 40 && title.length <= 45 ? '✓' : '×'} Başlık Uzunluğu ({title.length}/45)
-            </div>
-            <div className={`p-4 rounded-xl border text-[11px] font-bold transition-all ${desc.length >= 140 && desc.length <= 145 ? 'bg-green-500/10 border-green-500 text-green-500' : 'bg-pink-500/10 border-pink-500 text-pink-500'}`}>
-               {desc.length >= 140 && desc.length <= 145 ? '✓' : '×'} Meta Açıklama ({desc.length}/145)
-            </div>
-            <div className={`p-4 rounded-xl border text-[11px] font-bold transition-all ${hasKeyword(h1.t) ? 'bg-green-500/10 border-green-500 text-green-500' : 'bg-pink-500/10 border-pink-500 text-pink-500'}`}>
-               {hasKeyword(h1.t) ? '✓' : '×'} Başlıkta Anahtar Kelime
-            </div>
+          <div className="space-y-2">
+            <div className="flex justify-between text-[10px] font-black"><span>META AÇIKLAMA (140-145)</span> <span className={desc.length > 145 ? 'text-red-500' : ''}>{desc.length}</span></div>
+            <textarea value={desc} onChange={(e) => setDesc(e.target.value)} className={`w-full p-3 bg-gray-50 border rounded-lg text-xs outline-none h-24 resize-none transition-colors ${desc.length >= 140 && desc.length <= 145 ? 'bg-green-50 border-green-200' : ''}`} />
           </div>
-        </section>
+        </div>
 
-        <button className="w-full bg-blue-600 text-white py-6 rounded-2xl font-black text-sm tracking-[0.5em] hover:bg-blue-700 active:scale-95 transition-all shadow-xl shadow-blue-900/20 uppercase">
-          PUBLISH TO WP
-        </button>
+        <div className="mt-auto space-y-3">
+          <div className="p-4 bg-gray-50 rounded-xl border border-gray-100 flex justify-between items-center">
+            <span className="text-[10px] font-black opacity-40 uppercase tracking-widest text-center">İçerik Uzunluğu</span>
+            <span className="text-xs font-bold">{sections.reduce((acc, s) => acc + getWordCount(s.c), 0)} Kelime</span>
+          </div>
+          <button className="w-full bg-[#2F4F4F] text-white py-5 rounded-2xl font-black text-xs tracking-[0.5em] hover:bg-black transition-all shadow-xl">YAYINLA</button>
+        </div>
       </aside>
+
     </div>
   );
 }
