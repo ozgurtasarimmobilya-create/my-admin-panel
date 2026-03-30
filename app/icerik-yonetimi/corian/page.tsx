@@ -80,15 +80,15 @@ export default function UltimateSEOEditor() {
             </div>
           ))}
         </div>
-        <div className="p-6 border-t bg-white">
+        <div className="p-6 border-t bg-white text-center">
           <Link href="/icerik-yonetimi" className="flex items-center justify-center w-full py-3 bg-slate-50 border border-slate-200 text-slate-900 rounded-xl font-bold text-[12px] tracking-widest hover:bg-red-50 hover:text-red-600 transition-all duration-300 uppercase cursor-pointer">
             Sistemden Ayrıl
           </Link>
         </div>
       </aside>
 
-      {/* 2. ORTA: YAZIM ALANI (H1 REVİZE EDİLDİ) */}
-      <main className="flex-1 bg-white overflow-y-auto relative px-4 scrollbar-hide text-left">
+      {/* 2. ORTA: YAZIM ALANI */}
+      <main className="flex-1 bg-white overflow-y-auto relative px-4 scrollbar-hide">
         <div className="max-w-[850px] mx-auto py-12 px-12">
           
           <nav className="flex items-center space-x-3 mb-8 border-b border-slate-50 pb-5">
@@ -100,25 +100,27 @@ export default function UltimateSEOEditor() {
           </nav>
 
           <div className="space-y-4 mb-12">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-3">
-                <span className="inline-block px-3 py-1 bg-slate-900 text-white text-[10px] font-bold rounded-md uppercase tracking-widest">H1 Başlık</span>
-                <span className={`text-[10px] font-bold uppercase tracking-tighter ${h1Text.length >= 40 && h1Text.length <= 45 ? 'text-emerald-500' : 'text-slate-300'}`}>
-                  {h1Text.length >= 40 && h1Text.length <= 45 ? '✓ SEO Tamam' : 'Hedef 40-45'}
+            {/* ÜST GÖSTERGELER: 2 TIK BÜYÜTÜLDÜ VE RENK BELİRGİNLEŞTİ */}
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-4">
+                <span className="inline-flex items-center px-3 py-1.5 bg-slate-900 text-white text-[11px] font-bold rounded-lg uppercase tracking-widest shadow-sm">
+                  H1 Başlık
+                </span>
+                <span className={`text-[12px] font-bold uppercase tracking-tight ${h1Text.length >= 40 && h1Text.length <= 45 ? 'text-emerald-600' : 'text-slate-500'}`}>
+                  {h1Text.length >= 40 && h1Text.length <= 45 ? '✓ SEO Tamam' : 'Hedef: 40-45 Karakter'}
                 </span>
               </div>
-              <span className={`text-[11px] font-mono font-bold ${h1Text.length > 45 || (h1Text.length > 0 && h1Text.length < 40) ? 'text-red-500' : 'text-slate-400'}`}>
+              <span className={`text-[13px] font-mono font-bold px-3 py-1 rounded-md ${h1Text.length > 45 || (h1Text.length > 0 && h1Text.length < 40) ? 'text-red-600 bg-red-50' : 'text-slate-600 bg-slate-50'}`}>
                 {h1Text.length} / 45
               </span>
             </div>
             
-            {/* AKILLI H1 ALANI: 24px, Alt Satıra Geçer, Sağa Kaçmaz */}
             <textarea 
               value={h1Text}
               onChange={(e) => setH1Text(e.target.value)}
               rows={1}
               className="w-full text-[24px] font-bold border-none outline-none placeholder:text-slate-200 tracking-tight text-slate-900 bg-transparent py-1 resize-none overflow-hidden leading-tight"
-              placeholder="H1 Başlığınızı Buraya Yazın..."
+              placeholder="Başlık buraya gelecek..."
               onInput={(e) => {
                 const target = e.target as HTMLTextAreaElement;
                 target.style.height = 'auto';
@@ -138,12 +140,12 @@ export default function UltimateSEOEditor() {
             />
           </div>
 
-          <div className="space-y-8 pb-40 text-left">
+          <div className="space-y-8 pb-40">
             {blocks.map((block) => (
               <div key={block.id} className="relative group p-6 rounded-[2rem] hover:bg-slate-50/50 transition-all border border-transparent hover:border-slate-100 cursor-text">
                 <div className="absolute -top-4 left-8 opacity-0 group-hover:opacity-100 transition-all flex items-center bg-slate-900 text-white px-4 py-2 rounded-xl text-[10px] font-bold uppercase gap-4 z-40 shadow-2xl">
                   <span className="text-emerald-400 tracking-widest">{block.label}</span>
-                  <button type="button" onClick={() => deleteBlock(block.id)} className="text-red-400 hover:text-red-200 cursor-pointer border-l border-white/10 pl-4">Kaldır</button>
+                  <button type="button" onClick={() => deleteBlock(block.id)} className="text-red-400 hover:text-red-200 cursor-pointer border-l border-white/10 pl-4 font-bold">Kaldır</button>
                 </div>
                 <div className="relative">
                   {block.type.includes('başlık') || block.type === 'h2' || block.type === 'h3' ? (
