@@ -2,10 +2,10 @@ import Link from 'next/link';
 
 export default function IcerikYonetimi() {
   const markalar = [
-    { id: 1, isim: 'Corian', sayfaSayisi: 45 },
-    { id: 2, isim: 'Hi-Macs', sayfaSayisi: 30 },
-    { id: 3, isim: 'Staron', sayfaSayisi: 25 },
-    { id: 4, isim: 'Hanex', sayfaSayisi: 12 },
+    { id: 1, isim: 'Corian', slug: 'corian', sayfaSayisi: 45 },
+    { id: 2, isim: 'Hi-Macs', slug: 'hi-macs', sayfaSayisi: 30 },
+    { id: 3, isim: 'Staron', slug: 'staron', sayfaSayisi: 25 },
+    { id: 4, isim: 'Hanex', slug: 'hanex', sayfaSayisi: 12 },
   ];
 
   return (
@@ -26,9 +26,13 @@ export default function IcerikYonetimi() {
                 <h2 className="text-2xl font-bold text-[#2F4F4F]">{marka.isim}</h2>
                 <p className="text-[#696969]">{marka.sayfaSayisi} Kayıtlı Sayfa</p>
               </div>
-              <button className="bg-[#2F4F4F] text-white px-6 py-2 rounded-lg font-semibold hover:bg-[#1e3333] transition-colors">
-                Düzenle
-              </button>
+              
+              {/* İşte o sihirli bağ burada: Her markayı kendi klasörüne yönlendiriyoruz */}
+              <Link href={`/icerik-yonetimi/${marka.slug}`}>
+                <span className="bg-[#2F4F4F] text-white px-6 py-2 rounded-lg font-semibold hover:bg-[#1e3333] transition-colors cursor-pointer">
+                  Düzenle
+                </span>
+              </Link>
             </div>
           ))}
         </div>
