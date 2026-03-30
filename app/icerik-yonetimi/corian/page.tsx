@@ -1,167 +1,196 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Link from 'next/link';
 
-// Blok Yapısı
+// --- TİPLER ---
 type Block = {
   id: string;
   type: string;
   content: string;
-  extra?: string;
+  extra?: string; // Görsel Alt Metni veya Link için
 };
 
-export default function ProfessionalTerminalV13() {
-  const [blocks, setBlocks] = useState<Block[]>([]);
+// --- BİLEŞENLER (BLOK ŞABLONLARI) ---
 
+// 1. HD Görsel Bloğu (Duyarlı ve Profesyonel)
+const ImageHDBlock = ({ block, updateBlock }: { block: Block; updateBlock: (id: string, value: string, isExtra?: boolean) => void }) => (
+  <div className="relative group my-12 animate-in fade-in slide-in-from-top-2 duration-300">
+    {/* Görsel Alanı Placeholder (1800x1250px Oranı) */}
+    <div className="aspect-[1800/1250] bg-gray-50 border-2 border-dashed border-gray-100 rounded-[2rem] flex flex-col items-center justify-center text-gray-300 relative overflow-hidden shadow-inner group-hover:border-[#2F4F4F]/30 transition-colors">
+       <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="mb-3"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+       <span className="text-[11px] font-black uppercase tracking-[0.2em]">HD Görsel Alanı</span>
+       <p className="text-[10px] mt-1 opacity-70">Geniş ve kaliteli sunumlar için optimize edildi.</p>
+    </div>
+    {/* Alt Etiket Girişi (SEO İçin Kritik) */}
+    <input 
+      type="text" 
+      placeholder="Görsel Alt Etiketi (SEO)..." 
+      value={block.extra || ''}
+      onChange={(e) => updateBlock(block.id, e.target.value, true)}
+      className="w-full mt-4 p-3.5 bg-white border border-gray-100 rounded-xl text-sm outline-none focus:ring-1 focus:ring-[#2F4F4F] shadow-sm placeholder:text-gray-300"
+    />
+  </div>
+);
+
+// 2. Teknik Tablo Bloğu (Şablon)
+const TableBlock = () => (
+    <div className="my-10 p-6 border border-gray-100 rounded-2xl bg-gray-50/50 space-y-3 opacity-60">
+        <div className="font-bold text-xs uppercase text-gray-400 tracking-widest">Teknik Tablo Şablonu</div>
+        <div className="h-10 w-full bg-white rounded-lg border border-gray-100"></div>
+        <div className="h-10 w-full bg-white rounded-lg border border-gray-100"></div>
+    </div>
+);
+
+// --- ANA KOMPONENT ---
+export default function FunctionalTerminalV14() {
+  const [blocks, setBlocks] = useState<Block[]>([]);
+  const mainContentRef = useRef<HTMLDivElement>(null);
+
+  // Blok Ekleme Fonksiyonu
   const addBlock = (type: string) => {
     const newBlock: Block = {
       id: Math.random().toString(36).substr(2, 9),
       type,
       content: '',
-      extra: ''
+      extra: type === 'image_hd' ? 'HD Mutfak Tezgahı Görseli' : '' // Varsayılan Alt Metin
     };
     setBlocks([...blocks, newBlock]);
+    
+    // Eklendikten sonra aşağı kaydır (UX)
+    setTimeout(() => {
+        mainContentRef.current?.scrollTo({ top: mainContentRef.current.scrollHeight, behavior: 'smooth' });
+    }, 100);
+  };
+
+  // Blok Güncelleme (İçerik ve Extra)
+  const updateBlock = (id: string, value: string, isExtra: boolean = false) => {
+    setBlocks(blocks.map(b => b.id === id ? { ...b, [isExtra ? 'extra' : 'content']: value } : b));
+  };
+
+  // Blok Silme
+  const removeBlock = (id: string) => {
+    setBlocks(blocks.filter(b => b.id !== id));
   };
 
   return (
-    <div className="flex h-screen bg-[#F3F4F6] text-[#374151] font-sans overflow-hidden text-[12px]">
+    <div className="flex h-screen bg-[#F3F4F6] text-[#374151] font-sans overflow-hidden text-[14px]">
       
-      {/* --- SOL: 25+ ELEMENTLİ DEV CEPHANELİK --- */}
+      {/* --- 1. SOL: TAM KAPASİTE ELEMENT CEPHANELİĞİ (NET VE OKUNAKLI) --- */}
       <aside className="w-64 bg-white border-r border-gray-200 flex flex-col shadow-sm">
-        <div className="h-[60px] flex items-center px-5 border-b bg-[#F9FAFB]">
-          <span className="font-black text-[10px] tracking-[0.3em] text-[#2F4F4F] uppercase">Editör Paneli</span>
+        <div className="h-[70px] flex items-center px-6 border-b bg-[#F9FAFB]">
+          <span className="font-black text-[12px] tracking-[0.3em] text-[#2F4F4F] uppercase">Editör Paneli</span>
         </div>
 
-        <div className="flex-1 overflow-y-auto custom-scrollbar p-5 space-y-9">
+        <div className="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-10">
           
-          {/* GRUP 1: YAPI & TİPOGRAFİ */}
-          <div className="space-y-4">
-            <label className="text-[10px] font-bold text-[#64748B] uppercase tracking-[0.15em] block border-b border-gray-100 pb-1">Yapı & Tipografi</label>
-            <div className="flex flex-wrap gap-2">
-              <button onClick={() => addBlock('toc')} className="btn-flex border-blue-100 text-blue-600 bg-blue-50/20 text-[10px]">İçindekiler (TOC)</button>
-              <button onClick={() => addBlock('h2')} className="btn-flex">H2</button>
-              <button onClick={() => addBlock('h3')} className="btn-flex">H3</button>
-              <button onClick={() => addBlock('h4')} className="btn-flex">H4</button>
-              <button onClick={() => addBlock('h5')} className="btn-flex">H5</button>
-              <button onClick={() => addBlock('p')} className="btn-flex">Paragraf</button>
-              <button onClick={() => addBlock('ul')} className="btn-flex">Maddeli Liste</button>
-              <button onClick={() => addBlock('ol')} className="btn-flex">Numaralı Liste</button>
-              <button onClick={() => addBlock('quote')} className="btn-flex italic font-serif">Alıntı</button>
+          {/* GRUP 1: YAPISAL (BAŞLIKLAR VE YAZI) */}
+          <div className="space-y-5">
+            <label className="text-[11px] font-bold text-[#64748B] uppercase tracking-[0.2em] block border-b-2 border-gray-100 pb-1.5">Metin & Başlık</label>
+            <div className="flex flex-wrap gap-2.5">
+              <button onClick={() => addBlock('h2')} className="btn-flex text-[13px] px-4 py-2">H2</button>
+              <button onClick={() => addBlock('h3')} className="btn-flex text-[13px] px-4 py-2">H3</button>
+              <button onClick={() => addBlock('h4')} className="btn-flex text-[13px] px-4 py-2">H4</button>
+              <button onClick={() => addBlock('p')} className="btn-flex text-[13px] px-4 py-2">Paragraf</button>
+              <button onClick={() => addBlock('ul')} className="btn-flex text-[12px] px-4 py-2 opacity-60">Liste (•)</button>
+              <button onClick={() => addBlock('toc')} className="btn-flex border-blue-100 text-blue-700 bg-blue-50/20 text-[12px] px-4 py-2 opacity-60">İçindekiler</button>
             </div>
           </div>
 
-          {/* GRUP 2: MEDYA & GÖRSEL (HD) */}
-          <div className="space-y-4">
-            <label className="text-[10px] font-bold text-[#64748B] uppercase tracking-[0.15em] block border-b border-gray-100 pb-1">Medya & Görsel</label>
-            <div className="flex flex-wrap gap-2">
-              <button onClick={() => addBlock('image_hd')} className="btn-flex text-emerald-700 border-emerald-100 bg-emerald-50/20">HD Geniş Görsel</button>
-              <button onClick={() => addBlock('image_text')} className="btn-flex text-[10px]">Görsel + Metin</button>
-              <button onClick={() => addBlock('gallery')} className="btn-flex">Galeri</button>
-              <button onClick={() => addBlock('video')} className="btn-flex">Video / YouTube</button>
-              <button onClick={() => addBlock('divider')} className="btn-flex border-dashed opacity-60">Ayırıcı Çizgi</button>
-              <button onClick={() => addBlock('caption')} className="btn-flex text-[10px]">Resim Altı Yazı</button>
+          {/* GRUP 2: MEDYA (HD ALTYAPISI) */}
+          <div className="space-y-5">
+            <label className="text-[11px] font-bold text-[#64748B] uppercase tracking-[0.2em] block border-b-2 border-gray-100 pb-1.5">Medya & Görsel</label>
+            <div className="flex flex-wrap gap-2.5">
+              <button onClick={() => addBlock('image_hd')} className="btn-flex text-[12px] px-5 py-2.5 text-emerald-700 border-emerald-100 bg-emerald-50/20">HD Geniş Görsel</button>
+              <button onClick={() => addBlock('video')} className="btn-flex text-[13px] px-4 py-2 opacity-60">Video</button>
             </div>
           </div>
 
           {/* GRUP 3: SATIŞ & TEKNİK */}
-          <div className="space-y-4">
-            <label className="text-[10px] font-bold text-[#64748B] uppercase tracking-[0.15em] block border-b border-gray-100 pb-1">Satış & SEO</label>
-            <div className="flex flex-wrap gap-2">
-              <button onClick={() => addBlock('faq')} className="btn-flex text-orange-600 border-orange-100 bg-orange-50/10">SSS (FAQ)</button>
-              <button onClick={() => addBlock('table')} className="btn-flex font-bold border-gray-400">Teknik Tablo</button>
-              <button onClick={() => addBlock('cta')} className="btn-flex text-indigo-700 border-indigo-100 bg-indigo-50/10">CTA Buton</button>
-              <button onClick={() => addBlock('pdf')} className="btn-flex text-red-700 border-red-100 bg-red-50/10 text-[10px]">PDF Katalog</button>
-              <button onClick={() => addBlock('price')} className="btn-flex">Fiyat Listesi</button>
-              <button onClick={() => addBlock('refs')} className="btn-flex">Referanslar</button>
-              <button onClick={() => addBlock('contact')} className="btn-flex">İletişim Formu</button>
-              <button onClick={() => addBlock('map')} className="btn-flex">Google Harita</button>
-            </div>
-          </div>
-
-          {/* GRUP 4: OTORİTE & KOD */}
-          <div className="space-y-4">
-            <label className="text-[10px] font-bold text-[#64748B] uppercase tracking-[0.15em] block border-b border-gray-100 pb-1">Otorite & Kod</label>
-            <div className="flex flex-wrap gap-2 pb-8">
-              <button onClick={() => addBlock('author')} className="btn-flex font-bold">Yazar Kutusu</button>
-              <button onClick={() => addBlock('html')} className="btn-flex">HTML / Kod</button>
-              <button onClick={() => addBlock('related')} className="btn-flex">İlgili Yazılar</button>
-              <button onClick={() => addBlock('social')} className="btn-flex">Paylaşım</button>
+          <div className="space-y-5 pt-5 border-t opacity-40 pointer-events-none">
+            <label className="text-[11px] font-bold text-[#64748B] uppercase tracking-[0.2em] block border-b-2 border-gray-100 pb-1.5">SEO & Dönüşüm</label>
+            <div className="flex flex-wrap gap-2.5">
+              <button onClick={() => addBlock('faq')} className="btn-flex text-orange-600 border-orange-200 bg-orange-50/10 text-[12px] px-4 py-2">SSS (FAQ)</button>
+              <button onClick={() => addBlock('table')} className="btn-flex font-bold border-gray-400 text-[12px] px-4 py-2">Teknik Tablo</button>
+              <button onClick={() => addBlock('cta')} className="btn-flex text-emerald-700 border-emerald-200 text-[12px] px-4 py-2">CTA Buton</button>
             </div>
           </div>
         </div>
 
-        <div className="p-5 border-t bg-gray-50/50">
-          <Link href="/icerik-yonetimi" className="btn-exit">SİSTEMDEN AYRIL</Link>
+        {/* BELİRGİN ÇIKIŞ BUTONU */}
+        <div className="p-6 border-t bg-gray-50/50">
+          <Link href="/icerik-yonetimi" className="btn-exit text-[11px] py-4 rounded-2xl">
+            SİSTEMDEN AYRIL
+          </Link>
         </div>
       </aside>
 
-      {/* --- ORTA: YAZIM ALANI --- */}
-      <main className="flex-1 bg-white overflow-y-auto shadow-inner relative">
-        <div className="max-w-[750px] mx-auto py-24 px-12 space-y-12">
-          {/* H1 Alanı */}
-          <div className="space-y-5">
-            <div className="inline-block px-2 py-0.5 bg-gray-100 text-[#2F4F4F] text-[9px] font-black rounded uppercase">Sayfa H1</div>
-            <input className="w-full text-5xl font-black border-none outline-none placeholder:text-gray-100 tracking-tight" placeholder="Başlık Giriniz..." />
-            <textarea className="w-full text-lg text-gray-400 border-none outline-none resize-none italic border-l-2 border-gray-50 pl-8" placeholder="SEO Giriş Özeti..." rows={1} />
-          </div>
-          <div className="h-px bg-gray-100 w-full"></div>
+      {/* --- 2. ORTA: CANLI YAZIM ALANI (MAKSİMUM OKUNAKLILIK) --- */}
+      <main ref={mainContentRef} className="flex-1 bg-white overflow-y-auto scroll-smooth shadow-inner relative custom-scrollbar">
+        <div className="max-w-[780px] mx-auto py-28 px-14 space-y-16 text-[#1A1A1A]">
           
-          {/* Bloklar */}
-          <div className="min-h-[500px] space-y-8">
+          {/* H1 Sabit Başlık (Net Punto) */}
+          <div className="space-y-5 animate-in fade-in duration-700">
+            <div className="inline-block px-2 py-0.5 bg-[#2F4F4F]/10 text-[#2F4F4F] text-[10px] font-black rounded uppercase tracking-widest">Master H1</div>
+            <input className="w-full text-6xl font-black border-none outline-none placeholder:text-gray-100 tracking-tight text-[#111]" placeholder="Sayfa Başlığını Girin..." />
+            <textarea className="w-full text-xl text-gray-400 border-none outline-none resize-none italic border-l-4 border-gray-50 pl-8Placeholder:text-gray-200" placeholder="SEO odaklı giriş özeti / snippet..." rows={1} />
+          </div>
+
+          <div className="h-px bg-gray-50 w-full"></div>
+
+          {/* DİNAMİK BLOKLAR ALANI */}
+          <div className="min-h-[500px] space-y-10">
             {blocks.map((block) => (
-              <div key={block.id} className="relative group p-2 rounded-xl hover:bg-gray-50/50 transition-all">
-                <div className="text-[9px] font-bold text-gray-300 uppercase mb-2 tracking-widest">{block.type} Elementi</div>
-                <div className="min-h-[40px] border border-transparent border-l-gray-200 pl-4">
-                    {/* Buraya her block tipi için input gelecek */}
-                    <input className="w-full bg-transparent outline-none text-lg" placeholder={`${block.type} içeriğini yazın...`} />
-                </div>
+              <div key={block.id} className="relative group animate-in slide-in-from-left-2 duration-300">
+                {/* 1. Tipografi Blokları (H2, H3, P) */}
+                {block.type === 'h2' && (
+                  <input 
+                    autoFocus
+                    className="w-full text-4xl font-black tracking-tight text-[#111] border-none outline-none placeholder:text-gray-200 my-4" 
+                    placeholder="H2 Başlığı Yazın..."
+                    value={block.content}
+                    onChange={(e) => updateBlock(block.id, e.target.value)}
+                  />
+                )}
+                {block.type === 'h3' && (
+                  <input 
+                    autoFocus
+                    className="w-full text-3xl font-extrabold tracking-tight text-[#333] border-none outline-none placeholder:text-gray-200 my-3" 
+                    placeholder="H3 Başlığı Yazın..."
+                    value={block.content}
+                    onChange={(e) => updateBlock(block.id, e.target.value)}
+                  />
+                )}
+                {block.type === 'p' && (
+                  <textarea 
+                    autoFocus
+                    className="w-full text-lg leading-[1.8] text-[#4B5563] border-none outline-none resize-none placeholder:text-gray-200 my-2 custom-scrollbar" 
+                    placeholder="Paragraf içeriğini buraya yazmaya başlayın..."
+                    rows={4}
+                    value={block.content}
+                    onChange={(e) => updateBlock(block.id, e.target.value)}
+                  />
+                )}
+
+                {/* 2. HD Görsel Bloğu (Gerçek Şablon) */}
+                {block.type === 'image_hd' && (
+                  <ImageHDBlock block={block} updateBlock={updateBlock} />
+                )}
+
+                {/* 3. Teknik Tablo (Şablon) */}
+                {block.type === 'table' && <TableBlock />}
+
+                {/* Blok Silme Butonu (BÜYÜK VE BELİRGİN) */}
                 <button 
-                  onClick={() => setBlocks(blocks.filter(b => b.id !== block.id))}
-                  className="absolute -left-12 top-4 opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-600 transition-all font-black text-[9px] uppercase tracking-tighter"
+                  onClick={() => removeBlock(block.id)}
+                  className="absolute -left-16 top-2 opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-700 hover:bg-red-50 transition-all p-3 rounded-xl border border-red-100 bg-white shadow-xl"
+                  title="Bu elementi sil"
                 >
-                  SİL
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                 </button>
               </div>
             ))}
+
+            {/* Boş Alan Yer Tutucu */}
             {blocks.length === 0 && (
-              <div className="h-64 border-2 border-dashed border-gray-50 rounded-[3rem] flex items-center justify-center text-gray-200 italic select-none">
-                Sol taraftaki 25 elementten birini seçerek başlayın...
-              </div>
-            )}
-          </div>
-        </div>
-      </main>
-
-      {/* --- SAĞ: ANALİZ --- */}
-      <aside className="w-64 bg-[#F9FAFB] border-l border-gray-200 flex flex-col">
-        <div className="h-[60px] flex items-center justify-center border-b bg-white font-black text-[9px] text-gray-400 uppercase tracking-widest">SEO Skor</div>
-        <div className="p-6 flex-1 space-y-6">
-           <div className="p-8 bg-white border-2 border-[#2F4F4F] rounded-[2.5rem] text-center shadow-xl">
-              <span className="text-4xl font-black italic text-[#2F4F4F]">{blocks.length * 4 > 100 ? 100 : blocks.length * 4}</span>
-           </div>
-        </div>
-        <div className="p-6 border-t bg-white">
-          <button className="w-full bg-[#111] text-white py-4 rounded-xl text-[10px] font-black tracking-widest uppercase hover:bg-[#2F4F4F] transition-all">KAYDET</button>
-        </div>
-      </aside>
-
-      <style jsx>{`
-        .btn-flex {
-          display: inline-flex; align-items: center; justify-content: center; 
-          padding: 8px 16px; /* Tam simetrik, nefes alan boşluk */
-          background: white; border: 1px solid #E2E8F0; border-radius: 12px;
-          font-size: 11px; font-weight: 800; color: #475569; white-space: nowrap; transition: all 0.2s;
-        }
-        .btn-flex:hover { border-color: #2F4F4F; color: #2F4F4F; transform: translateY(-1px); box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .btn-exit {
-          display: flex; align-items: center; justify-content: center; width: 100%; padding: 12px;
-          background: #B91C1C; color: white; border-radius: 12px; font-weight: 900; font-size: 10px;
-          letter-spacing: 0.2em; transition: all 0.3s;
-        }
-        .custom-scrollbar::-webkit-scrollbar { width: 3px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #E5E7EB; border-radius: 10px; }
-      `}</style>
-    </div>
-  );
-}
+              <div className="h-96 border-4 border-dashed border-gray-5
