@@ -6,41 +6,33 @@ import Link from 'next/link';
 interface Section {
   id: string;
   type: 'h2' | 'h3' | 'h4' | 'sss' | 'line';
-  t: string; // Başlık veya Soru
-  c: string; // İçerik veya Cevap
+  t: string; 
+  c: string;
 }
 
 export default function CorianPanel() {
   const [title, setTitle] = useState('');
   const [desc, setDesc] = useState('');
   const [h1, setH1] = useState({ t: '', c: '' });
-  const [sections, setSections] = useState<Section[]>([
-    { id: 'init-1', type: 'h2', t: '', c: '' }
-  ]);
+  const [sections, setSections] = useState<Section[]>([{ id: 'init-1', type: 'h2', t: '', c: '' }]);
 
   const getWordCount = (text: string) => text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
 
-  // SEO Renk Kontrolü (Trafik Lambası)
+  // SEO Renk Kontrolü
   const getStatusColor = (current: number, min: number, max: number) => {
-    if (current === 0) return 'bg-gray-50 border-gray-200';
-    if (current < min) return 'bg-pink-50 border-pink-200 text-pink-700'; // Çok kısa
-    if (current <= max) return 'bg-green-50 border-green-200 text-green-700'; // İdeal
-    return 'bg-orange-50 border-orange-200 text-orange-700'; // Çok uzun
+    if (current === 0) return 'bg-gray-100 border-gray-200 text-gray-400';
+    if (current < min) return 'bg-pink-100 border-pink-300 text-pink-700';
+    if (current <= max) return 'bg-green-100 border-green-300 text-green-700';
+    return 'bg-orange-100 border-orange-300 text-orange-700';
   };
 
-  const addSection = (type: Section['type'], index?: number) => {
+  const addSection = (type: Section['type'], index: number) => {
     const newSection: Section = { id: `sec-${Date.now()}`, type, t: '', c: '' };
-    if (typeof index === 'number') {
-      const updated = [...sections];
-      updated.splice(index + 1, 0, newSection);
-      setSections(updated);
-    } else {
-      setSections([...sections, newSection]);
-    }
+    const updated = [...sections];
+    updated.splice(index + 1, 0, newSection);
+    setSections(updated);
   };
 
-  const removeSection = (id: string) => setSections(sections.filter(s => s.id !== id));
-  
   const updateSection = (id: string, key: 't' | 'c', value: string) => {
     setSections(sections.map(s => s.id === id ? { ...s, [key]: value } : s));
   };
@@ -48,125 +40,136 @@ export default function CorianPanel() {
   const tableOfContents = useMemo(() => sections.filter(s => s.type === 'h2' && s.t), [sections]);
 
   return (
-    <main className="min-h-screen bg-[#F4F7F6] p-6 md:p-12 text-[#2F4F4F] font-sans">
-      <div className="max-w-5xl mx-auto space-y-10">
-        
-        {/* Header */}
-        <div className="flex justify-between items-center border-b-4 border-[#2F4F4F] pb-6">
-          <h1 className="text-3xl font-black tracking-tight uppercase italic">Corian® SEO Engine</h1>
-          <Link href="/icerik-yonetimi" className="text-xs font-bold border-2 border-[#2F4F4F] px-5 py-2 rounded-full hover:bg-[#2F4F4F] hover:text-white transition-all">← GERİ</Link>
-        </div>
-
-        {/* İÇİNDEKİLER */}
-        <section className="bg-white border-2 border-gray-200 rounded-2xl p-6 shadow-sm">
-          <h2 className="text-[10px] font-black mb-4 opacity-40 tracking-[0.3em]">NAVİGASYON (H2)</h2>
-          <div className="flex flex-wrap gap-3">
-            {tableOfContents.length === 0 ? <p className="text-xs italic text-gray-300">Başlık bekleniyor...</p> : 
-              tableOfContents.map((s, i) => <span key={s.id} className="text-[11px] font-bold bg-gray-100 px-3 py-1 rounded-md">0{i+1}. {s.t}</span>)
-            }
-          </div>
-        </section>
-
-        {/* METALAR (SAYAÇLI & RENKLİ) */}
-        <div className="grid md:grid-cols-2 gap-8">
-          <div className={`border-2 rounded-2xl p-6 shadow-sm space-y-3 transition-colors ${getStatusColor(title.length, 40, 45)}`}>
-            <div className="flex justify-between items-center text-[10px] font-black uppercase">
-              <span>SEO Başlığı (40-45)</span>
-              <span>{title.length} / 45</span>
+    <div className="flex h-screen bg-[#F0F2F5] overflow-hidden font-sans text-[#2F4F4F]">
+      
+      {/* SOL PANEL: İÇİNDEKİLER (SABİT) */}
+      <aside className="w-64 bg-white border-r border-gray-200 p-6 flex flex-col shadow-xl z-20">
+        <Link href="/icerik-yonetimi" className="text-[10px] font-black tracking-widest mb-10 hover:text-black">← GERİ DÖN</Link>
+        <h2 className="text-[10px] font-black uppercase opacity-40 mb-4 tracking-tighter">Navigasyon (H2)</h2>
+        <nav className="flex-1 overflow-y-auto space-y-3">
+          {tableOfContents.map((s, i) => (
+            <div key={s.id} className="text-xs font-bold border-l-2 border-[#2F4F4F] pl-3 py-1 truncate">
+              0{i+1}. {s.t || "Başlıksız"}
             </div>
-            <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} className="w-full p-3 bg-white/60 border rounded-lg text-sm outline-none" placeholder="Örn: Corian Mutfak Tezgahı Fiyatları 2026" />
-          </div>
-          
-          <div className={`border-2 rounded-2xl p-6 shadow-sm space-y-3 transition-colors ${getStatusColor(desc.length, 140, 145)}`}>
-            <div className="flex justify-between items-center text-[10px] font-black uppercase">
-              <span>Meta Açıklama (140-145)</span>
-              <span>{desc.length} / 145</span>
-            </div>
-            <textarea value={desc} onChange={(e) => setDesc(e.target.value)} className="w-full p-3 bg-white/60 border rounded-lg text-sm outline-none h-20 resize-none" placeholder="Corian yüzeylerin dayanıklılığını ve 2026 renk seçeneklerini keşfedin..." />
-          </div>
-        </div>
+          ))}
+        </nav>
+      </aside>
 
-        {/* ANA EDİTÖR */}
-        <div className="bg-white border-2 border-gray-200 rounded-[2.5rem] p-10 shadow-2xl space-y-12">
+      {/* ORTA PANEL: İÇERİK EDİTÖRÜ (KAYDIRILABİLİR) */}
+      <main className="flex-1 overflow-y-auto p-12 bg-white/50 relative">
+        <div className="max-w-3xl mx-auto space-y-16 pb-32">
           
-          {/* H1 & SNIPPET */}
-          <div className="space-y-6 pb-10 border-b-2 border-gray-50">
-            <div className="flex justify-between items-center"><label className="text-[10px] font-black bg-[#2F4F4F] text-white px-3 py-1 rounded">H1 / ANA BAŞLIK</label><span className="text-[10px] font-bold opacity-30">{h1.t.length}/70</span></div>
-            <input type="text" value={h1.t} onChange={(e) => setH1({...h1, t: e.target.value})} className="w-full text-4xl font-black border-none outline-none" placeholder="Corian Solid Surface Uygulamaları" />
-            
-            <div className="flex justify-between items-center"><label className="text-[10px] font-black text-gray-400">GİRİŞ / SNIPPET (Kelime: {getWordCount(h1.c)}/200)</label></div>
-            <textarea value={h1.c} onChange={(e) => setH1({...h1, c: e.target.value})} className="w-full p-5 bg-gray-50 rounded-2xl text-sm border-none outline-none h-24 italic" placeholder="Corian, mimari tasarımlarda sınırsız özgürlük sunan..." />
+          {/* H1 BÖLÜMÜ */}
+          <div className="space-y-4">
+            <div className="flex justify-between items-center border-b pb-2">
+              <span className="text-[10px] font-black bg-black text-white px-2 py-0.5">H1</span>
+              <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${h1.t.length > 70 ? 'bg-red-500 text-white' : 'bg-gray-100'}`}>{h1.t.length} / 70</span>
+            </div>
+            <textarea 
+              value={h1.t} 
+              onChange={(e) => setH1({...h1, t: e.target.value})}
+              className="w-full text-5xl font-black bg-transparent border-none outline-none resize-none leading-tight" 
+              placeholder="Ana Başlığı Buraya Yazın..."
+              rows={2}
+            />
+            <textarea 
+              value={h1.c} 
+              onChange={(e) => setH1({...h1, c: e.target.value})}
+              className="w-full p-4 bg-gray-100/50 rounded-xl text-sm italic border-none outline-none min-h-[80px]" 
+              placeholder="H1 altı kısa giriş/snippet..."
+            />
           </div>
 
           {/* DİNAMİK BÖLÜMLER */}
-          <div className="space-y-10">
+          <div className="space-y-12">
             {sections.map((sec, index) => (
-              <div key={sec.id} className="relative group">
+              <div key={sec.id} className="relative group animate-in fade-in slide-in-from-bottom-4">
+                
                 {sec.type === 'line' ? (
-                  <div className="py-8 flex items-center gap-4">
-                    <div className="flex-1 h-1 bg-gradient-to-r from-transparent via-[#2F4F4F] to-transparent opacity-20"></div>
-                    <span className="text-[9px] font-black text-gray-300 uppercase italic">Hero Seperator</span>
-                    <div className="flex-1 h-1 bg-gradient-to-r from-[#2F4F4F] via-transparent to-transparent opacity-20"></div>
-                    <button onClick={() => removeSection(sec.id)} className="absolute right-0 bg-red-100 text-red-500 p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">×</button>
+                  <div className="h-px bg-gray-200 my-8 relative">
+                    <span className="absolute -top-2 left-1/2 -translate-x-1/2 bg-[#F0F2F5] px-2 text-[8px] font-bold opacity-30 italic">AYIRICI ÇİZGİ</span>
                   </div>
                 ) : (
-                  <div className={`p-8 border-2 rounded-[2rem] transition-all shadow-sm ${
-                    sec.type === 'h2' ? 'border-blue-50 bg-blue-50/10' : 
-                    sec.type === 'sss' ? 'border-yellow-100 bg-yellow-50/20' : 'border-gray-100'
-                  }`}>
-                    <button onClick={() => removeSection(sec.id)} className="absolute -right-3 -top-3 bg-red-500 text-white w-8 h-8 rounded-full opacity-0 group-hover:opacity-100 transition-all shadow-lg font-bold z-20">×</button>
-                    
-                    <div className="flex justify-between items-center mb-5">
-                      <div className="flex items-center gap-3">
-                        <span className={`text-[9px] font-black uppercase px-2 py-1 rounded border shadow-sm ${sec.type === 'h2' ? 'bg-blue-500 text-white border-blue-500' : 'bg-white'}`}>
-                          {sec.type}
-                        </span>
-                        <span className="text-[10px] font-bold text-gray-400 italic">
-                          {sec.type === 'h2' ? 'Min. 300 Kelime' : sec.type === 'h3' ? 'Min. 200 Kelime' : ''}
-                        </span>
-                      </div>
-                      <div className={`text-[10px] font-mono font-bold px-2 py-1 rounded ${getWordCount(sec.c) >= (sec.type === 'h2' ? 300 : 200) ? 'text-green-600 bg-green-50' : 'text-orange-400'}`}>
-                        Kelime: {getWordCount(sec.c)}
+                  <div className={`p-8 border-2 rounded-3xl transition-all bg-white hover:shadow-2xl ${sec.type === 'h2' ? 'border-[#2F4F4F]' : 'border-gray-100'}`}>
+                    <div className="flex justify-between items-center mb-4">
+                      <span className="text-[9px] font-black uppercase opacity-40">{sec.type} Bölümü</span>
+                      <div className="flex gap-2">
+                        <span className="text-[9px] font-bold bg-gray-100 px-2 py-0.5 rounded">Kelime: {getWordCount(sec.c)}</span>
+                        <span className="text-[9px] font-bold bg-gray-100 px-2 py-0.5 rounded">Karakter: {sec.t.length}</span>
                       </div>
                     </div>
-
                     <input 
                       type="text" 
                       value={sec.t} 
-                      onChange={(e) => updateSection(sec.id, 't', e.target.value)} 
-                      className="w-full p-2 mb-4 font-bold border-b-2 bg-transparent outline-none text-xl focus:border-[#2F4F4F]" 
-                      placeholder={sec.type === 'sss' ? 'Müşteriler ne soruyor?' : 'Alt başlığınızı buraya yazın...'}
+                      onChange={(e) => updateSection(sec.id, 't', e.target.value)}
+                      className="w-full text-2xl font-bold border-b border-gray-100 mb-4 outline-none focus:border-black"
+                      placeholder={`${sec.type === 'sss' ? 'Soru' : 'Başlık'} girin...`}
                     />
                     <textarea 
                       value={sec.c} 
-                      onChange={(e) => updateSection(sec.id, 'c', e.target.value)} 
-                      className="w-full p-5 bg-white rounded-2xl text-sm outline-none min-h-[150px] border border-gray-50 focus:shadow-inner transition-shadow" 
-                      placeholder={sec.type === 'sss' ? 'Uzman cevabı buraya...' : 'Detaylı, teknik ve satış odaklı makale içeriği...'}
+                      onChange={(e) => updateSection(sec.id, 'c', e.target.value)}
+                      className="w-full text-sm leading-relaxed text-gray-600 outline-none min-h-[120px] resize-none"
+                      placeholder="İçeriğinizi bu alana detaylıca girin..."
                     />
-
-                    {/* Araya Ekleme Menüsü */}
-                    <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all flex gap-2 z-30 scale-90 group-hover:scale-100">
-                      {['h2', 'h3', 'sss', 'line'].map((type) => (
-                        <button key={type} onClick={() => addSection(type as any, index)} className="bg-[#2F4F4F] text-white px-3 py-1.5 rounded-full text-[9px] font-black hover:bg-black uppercase shadow-xl border border-white">
-                          + {type}
-                        </button>
-                      ))}
-                    </div>
                   </div>
                 )}
+
+                {/* ARAYA EKLEME PANELİ (HOVER) */}
+                <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all flex gap-1 z-30">
+                  {['h2', 'h3', 'sss', 'line'].map((t) => (
+                    <button key={t} onClick={() => addSection(t as any, index)} className="bg-black text-white text-[8px] font-bold px-3 py-1.5 rounded-full hover:scale-110 uppercase">+ {t}</button>
+                  ))}
+                  <button onClick={() => setSections(sections.filter(s => s.id !== sec.id))} className="bg-red-500 text-white text-[8px] font-bold px-3 py-1.5 rounded-full hover:scale-110 uppercase">SİL</button>
+                </div>
               </div>
             ))}
           </div>
+        </div>
+      </main>
 
-          <button onClick={() => addSection('h2')} className="w-full py-6 border-4 border-dashed border-gray-100 rounded-[2rem] text-[10px] font-black text-gray-300 hover:border-[#2F4F4F] hover:text-[#2F4F4F] transition-all uppercase tracking-[0.4em]">
-            + SAYFAYI UZAT (YENİ BÖLÜM)
-          </button>
+      {/* SAĞ PANEL: SEO ANALİZ (SABİT) */}
+      <aside className="w-80 bg-white border-l border-gray-200 p-8 shadow-2xl z-20 space-y-8 overflow-y-auto">
+        <h2 className="text-[10px] font-black uppercase tracking-widest border-b pb-2">SEO Kontrol Paneli</h2>
+        
+        {/* SEO BAŞLIĞI KONTROL */}
+        <div className="space-y-3">
+          <div className="flex justify-between text-[10px] font-bold uppercase">
+            <span>Google Başlığı (40-45)</span>
+            <span className={`px-2 py-0.5 rounded ${getStatusColor(title.length, 40, 45)}`}>{title.length} / 45</span>
+          </div>
+          <input 
+            type="text" 
+            value={title} 
+            onChange={(e) => setTitle(e.target.value)}
+            className="w-full p-3 bg-gray-50 border border-gray-100 rounded-lg text-xs outline-none focus:ring-1 focus:ring-black"
+            placeholder="SEO Başlığı..."
+          />
         </div>
 
-        <button className="w-full bg-[#2F4F4F] text-white py-10 rounded-[3rem] font-black text-3xl shadow-2xl hover:bg-black active:scale-95 transition-all uppercase tracking-[0.8em]">
-          SİSTEMİ GÜNCELLE
+        {/* META AÇIKLAMA KONTROL */}
+        <div className="space-y-3">
+          <div className="flex justify-between text-[10px] font-bold uppercase">
+            <span>Meta Açıklama (140-145)</span>
+            <span className={`px-2 py-0.5 rounded ${getStatusColor(desc.length, 140, 145)}`}>{desc.length} / 145</span>
+          </div>
+          <textarea 
+            value={desc} 
+            onChange={(e) => setDesc(e.target.value)}
+            className="w-full p-3 bg-gray-50 border border-gray-100 rounded-lg text-xs outline-none h-32 resize-none focus:ring-1 focus:ring-black"
+            placeholder="Meta açıklaması..."
+          />
+        </div>
+
+        {/* HIZLI İSTATİSTİKLER */}
+        <div className="pt-6 border-t space-y-4">
+          <div className="flex justify-between text-xs font-bold italic opacity-50"><span>Toplam Bölüm:</span> <span>{sections.length}</span></div>
+          <div className="flex justify-between text-xs font-bold italic opacity-50"><span>Toplam H2:</span> <span>{tableOfContents.length}</span></div>
+        </div>
+
+        <button className="w-full bg-black text-white py-6 rounded-2xl font-black text-sm tracking-[0.4em] hover:bg-[#2F4F4F] transition-all uppercase shadow-lg active:scale-95">
+          GÜNCELLE
         </button>
-      </div>
-    </main>
+      </aside>
+    </div>
   );
 }
