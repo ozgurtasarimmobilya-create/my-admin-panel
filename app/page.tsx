@@ -23,29 +23,29 @@ export default function CCTeamWorkLogin() {
           <div className="relative z-10 text-left">
             {/* Logo Alanı */}
             <div className="w-12 h-12 bg-emerald-600 rounded-xl flex items-center justify-center font-bold text-white text-2xl mb-12 shadow-xl shadow-emerald-900/40">
-              cc
+              CC
             </div>
             
-            {/* Harmanlanmış Slogan */}
+            {/* Senin İstediğin Slogan Dizilimi */}
             <h1 className="text-3xl font-bold tracking-tight mb-6 leading-tight">
-              Semantik içerik ve <br /> seo mimari yönetimi
+              Semantik İçerik ve <br /> SEO Mimari Yönetimi
             </h1>
             
             <p className="text-[#edede7]/70 text-base leading-relaxed max-w-sm">
-              İçerik yönetim süreçlerinizi optimize eden, dijital varlıklarınızı Google algoritmalarıyla tam uyumlu ve teknik bir disiplinle inşa eden profesyonel mimari.
+              Dijital varlıklarınızı Google algoritmalarıyla tam uyumlu, hiyerarşik ve teknik bir disiplinle inşa edin. İçerik yönetim süreçlerinizi optimize eden profesyonel SEO mimarisi.
             </p>
           </div>
           
-          {/* Powered By (Artık Küçük Harf) */}
-          <div className="relative z-10 text-[12px] text-[#edede7]/30 font-medium tracking-wide">
-            powered by cc teamwork v4.0
+          {/* TAM OLARAK İSTEDİĞİN YAZIM ŞEKLİ */}
+          <div className="relative z-10 text-[12px] text-[#edede7]/40 font-medium tracking-wide">
+            Powered By CC TeamWork v4.0
           </div>
         </div>
 
         {/* SAĞ TARAF: GİRİŞ FORMU */}
         <div className="flex-1 bg-white flex flex-col justify-center px-10 md:px-24 text-slate-900 relative">
           
-          {/* DİL SEÇENEĞİ */}
+          {/* DİL SEÇENEĞİ (Belirgin ve Çerçeveli) */}
           <div className="absolute top-10 right-10 flex items-center">
             <button 
               onClick={() => setShowLang(!showLang)}
@@ -62,7 +62,7 @@ export default function CCTeamWorkLogin() {
                     onClick={() => { setLang(l); setShowLang(false); }}
                     className="w-full text-left px-5 py-3 text-[11px] font-bold text-slate-600 hover:bg-slate-50 hover:text-emerald-600 transition-colors border-b border-slate-50 last:border-none"
                   >
-                    {l === 'AR' ? 'ar (العربية)' : l === 'TR' ? 'tr (türkçe)' : 'en (english)'}
+                    {l === 'AR' ? 'AR (العربية)' : l === 'TR' ? 'TR (Türkçe)' : 'EN (English)'}
                   </button>
                 ))}
               </div>
@@ -76,9 +76,9 @@ export default function CCTeamWorkLogin() {
             </div>
 
             <form onSubmit={handleLogin} className="space-y-6 text-left">
-              {/* Kullanıcı Adı */}
+              {/* Kullanıcı Adı veya E-posta adresi (Çerçeve her zaman görünür) */}
               <div className="space-y-2">
-                <label className="text-[13px] font-semibold text-slate-700 ml-1">Kullanıcı adı veya e-posta</label>
+                <label className="text-[13px] font-semibold text-slate-700 ml-1">Kullanıcı adı veya e-posta adresi</label>
                 <input 
                   type="text" 
                   className="w-full p-4 bg-white border border-slate-300 rounded-[12px] outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 transition-all text-slate-900 shadow-sm placeholder:text-slate-200"
@@ -87,7 +87,7 @@ export default function CCTeamWorkLogin() {
                 />
               </div>
 
-              {/* Parola */}
+              {/* Parola (Çerçeve her zaman görünür) */}
               <div className="space-y-2">
                 <label className="text-[13px] font-semibold text-slate-700 ml-1">Parola</label>
                 <input 
@@ -104,11 +104,12 @@ export default function CCTeamWorkLogin() {
               <div className="flex items-center justify-between text-[13px] py-1">
                 <label className="flex items-center gap-2 cursor-pointer group">
                   <input type="checkbox" className="w-4 h-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-600 cursor-pointer" />
-                  <span className="text-slate-500 group-hover:text-slate-900 transition-colors">Beni hatırla</span>
+                  <span className="text-slate-600 group-hover:text-slate-900 transition-colors">Beni hatırla</span>
                 </label>
                 <button type="button" className="text-emerald-700 font-semibold hover:underline underline-offset-4">Parolanızı mı unuttunuz?</button>
               </div>
 
+              {/* Butonlar */}
               <div className="space-y-4 pt-4">
                 <button 
                   type="submit" 
@@ -131,12 +132,13 @@ export default function CCTeamWorkLogin() {
     );
   }
 
-  // --- PANEL GİRİŞİ ---
+  // --- PANEL GİRİŞİ YAPILDIKTAN SONRAKİ EKRAN ---
   return (
     <div className="flex h-screen items-center justify-center bg-[#f9fafb]">
        <div className="text-center">
-         <h1 className="text-xl font-bold">cc teamwork yönetim paneli</h1>
-         <button onClick={() => setIsAuthenticated(false)} className="mt-4 text-xs font-bold text-red-500 cursor-pointer">güvenli çıkış</button>
+         <h1 className="text-xl font-bold text-slate-900">CC TeamWork Yönetim Paneli</h1>
+         <p className="text-sm text-slate-500 mt-2">Giriş başarılı, sisteme yönlendiriliyorsunuz...</p>
+         <button onClick={() => setIsAuthenticated(false)} className="mt-6 text-xs font-bold text-red-500 cursor-pointer hover:underline">Güvenli Çıkış Yap</button>
        </div>
     </div>
   );
