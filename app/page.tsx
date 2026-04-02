@@ -1,28 +1,34 @@
-import Link from 'next/link';
+'use client';
+import { useState } from 'react';
+// Oluşturduğun parçaları içeri çağırıyoruz
+import { EditorSidebar } from '@/components/editor/EditorSidebar';
+import { EditorMeta } from '@/components/editor/EditorMeta';
+import { DynamicBlocks } from '@/components/editor/DynamicBlocks';
 
-export default function Home() {
+export default function EditorPage() {
+  const [blocks, setBlocks] = useState<any>([]);
+  const [meta, setMeta] = useState({ h1: '', snippet: '' });
+
+  const addBlock = (label: string) => {
+    setBlocks([...blocks, { 
+      id: Math.random().toString(36).substring(2, 9), 
+      label, 
+      content: '' 
+    }]);
+  };
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-[#F5F5F5] p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between flex flex-col">
-        
-        {/* Senin sevdiğin o çentikli, ağır duran başlık */}
-        <h1 className="text-5xl font-extrabold text-[#2F4F4F] tracking-tight mb-4">
-          Özgür Tasarım
-        </h1>
-        
-        <p className="text-[#696969] text-xl mb-8">Admin Kontrol Paneli</p>
-        
-        <div className="flex gap-4">
-          {/* Butonu bu Link içine aldım, artık tıklandığında yeni sayfaya gider */}
-          <Link href="/icerik-yonetimi" className="bg-[#2F4F4F] hover:bg-[#1e3333] text-white font-bold py-3 px-8 rounded-lg transition-all duration-300 shadow-lg inline-block text-center">
-            İçerik Yönetimi
-          </Link>
-
-          <button className="border-2 border-[#2F4F4F] text-[#2F4F4F] hover:bg-[#2F4F4F] hover:text-white font-bold py-3 px-8 rounded-lg transition-all duration-300">
-            SEO Ayarları
-          </button>
-        </div>
-      </div>
-    </main>
+    <div className="flex h-screen bg-[#F5F5F7] overflow-hidden">
+      {/* 1. Parça */}
+      <EditorSidebar addBlock={addBlock} />
+      
+      {/* Sağ taraf (Yazım Alanı) */}
+      <main className="flex-1 ml-72 overflow-y-auto bg-white scrollbar-hide">
+        {/* 2. Parça */}
+        <EditorMeta meta={meta} setMeta={setMeta} />
+        {/* 3. Parça */}
+        <DynamicBlocks blocks={blocks} setBlocks={setBlocks} />
+      </main>
+    </div>
   );
 }
