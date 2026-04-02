@@ -19,7 +19,7 @@ export default function SmartSetupWizard() {
     setError('');
     if (step === 1) {
       if (!formData.license || !formData.dbName || !formData.dbUser || !formData.dbPass) {
-        setError('Lütfen tüm veritabanı alanlarını eksiksiz doldurun.');
+        setError('Lütfen tüm alanları eksiksiz doldurun.');
         return;
       }
     }
@@ -36,7 +36,7 @@ export default function SmartSetupWizard() {
 
   return (
     <div className="min-h-screen bg-[#f4f4f5] flex items-center justify-center font-sans p-6 overflow-hidden text-left">
-      <div className="w-full max-w-xl bg-white shadow-sm overflow-hidden h-[620px] flex flex-col rounded-[6px] border border-slate-300">
+      <div className="w-full max-w-xl bg-white shadow-sm overflow-hidden h-[580px] flex flex-col rounded-[6px] border border-slate-300">
         
         {/* Header - Gri Tonlama */}
         <div className="bg-[#334155] p-6 text-white flex justify-between items-center shrink-0 border-b border-slate-400">
@@ -50,7 +50,7 @@ export default function SmartSetupWizard() {
         </div>
 
         {/* İçerik Alanı */}
-        <div className="p-8 flex-1 flex flex-col justify-between bg-white text-left overflow-y-auto">
+        <div className="p-8 flex-1 flex flex-col justify-between bg-white text-left">
           
           <div className="space-y-5 text-left">
             {error && (
@@ -74,29 +74,31 @@ export default function SmartSetupWizard() {
               </div>
             )}
 
-            {/* ADIM 1: LİSANS VE DB - ETİKETLER ÜSTE ALINDI */}
+            {/* ADIM 1: LİSANS VE DB - KULLANICI/PAROLA YAN YANA */}
             {step === 1 && (
               <div className="space-y-4 animate-in fade-in duration-300">
                 <h2 className="text-lg font-bold text-slate-800 border-b border-slate-200 pb-2 uppercase">Lisans ve Veritabanı</h2>
                 <div className="space-y-4">
-                  <div className="flex flex-col gap-1.5 text-left">
-                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Lisans Anahtarı</label>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[10px] font-bold text-slate-500 uppercase">Lisans Anahtarı</label>
                     <input type="text" onChange={(e) => setFormData({...formData, license: e.target.value})} placeholder="CC-XXXX-XXXX" className="w-full px-3 py-2.5 bg-white border border-slate-300 rounded-[6px] outline-none focus:border-slate-800 text-sm font-mono" />
                   </div>
                   
-                  <div className="flex flex-col gap-1.5 text-left">
-                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Veritabanı Adı</label>
-                    <input type="text" onChange={(e) => setFormData({...formData, dbName: e.target.value})} placeholder="Örn: db_ajans" className="w-full px-3 py-2.5 bg-white border border-slate-300 rounded-[6px] outline-none focus:border-slate-800 text-sm" />
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[10px] font-bold text-slate-500 uppercase">Veritabanı Adı</label>
+                    <input type="text" onChange={(e) => setFormData({...formData, dbName: e.target.value})} placeholder="db_isim" className="w-full px-3 py-2.5 bg-white border border-slate-300 rounded-[6px] outline-none focus:border-slate-800 text-sm" />
                   </div>
 
-                  <div className="flex flex-col gap-1.5 text-left">
-                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Kullanıcı Adı</label>
-                    <input type="text" onChange={(e) => setFormData({...formData, dbUser: e.target.value})} placeholder="Örn: root" className="w-full px-3 py-2.5 bg-white border border-slate-300 rounded-[6px] outline-none focus:border-slate-800 text-sm" />
-                  </div>
-
-                  <div className="flex flex-col gap-1.5 text-left">
-                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Parola</label>
-                    <input type="password" onChange={(e) => setFormData({...formData, dbPass: e.target.value})} placeholder="••••••••" className="w-full px-3 py-2.5 bg-white border border-slate-300 rounded-[6px] outline-none focus:border-slate-800 text-sm" />
+                  {/* Yan Yana Alanlar */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] font-bold text-slate-500 uppercase">Kullanıcı Adı</label>
+                      <input type="text" onChange={(e) => setFormData({...formData, dbUser: e.target.value})} placeholder="root" className="w-full px-3 py-2.5 bg-white border border-slate-300 rounded-[6px] outline-none focus:border-slate-800 text-sm" />
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] font-bold text-slate-500 uppercase">Parola</label>
+                      <input type="password" onChange={(e) => setFormData({...formData, dbPass: e.target.value})} placeholder="••••" className="w-full px-3 py-2.5 bg-white border border-slate-300 rounded-[6px] outline-none focus:border-slate-800 text-sm" />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -106,14 +108,14 @@ export default function SmartSetupWizard() {
             {step === 2 && (
               <div className="space-y-4 animate-in fade-in duration-300">
                 <h2 className="text-lg font-bold text-slate-800 border-b border-slate-200 pb-2 uppercase">Panel Erişimi</h2>
-                <div className="space-y-4 text-left">
+                <div className="space-y-4">
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Yönetici E-posta</label>
+                    <label className="text-[10px] font-bold text-slate-500 uppercase">Yönetici E-posta</label>
                     <input type="email" placeholder="admin@site.com" onChange={(e) => setFormData({...formData, adminUser: e.target.value})} className="w-full px-3 py-2.5 bg-white border border-slate-300 rounded-[6px] outline-none focus:border-slate-800 text-sm" />
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Yönetici Şifresi</label>
-                    <input type="password" placeholder="••••••••" onChange={(e) => setFormData({...formData, adminPass: e.target.value})} className="w-full px-3 py-2.5 bg-white border border-slate-300 rounded-[6px] outline-none focus:border-slate-800 text-sm font-mono" />
+                    <label className="text-[10px] font-bold text-slate-500 uppercase">Yönetici Şifresi</label>
+                    <input type="password" placeholder="••••" onChange={(e) => setFormData({...formData, adminPass: e.target.value})} className="w-full px-3 py-2.5 bg-white border border-slate-300 rounded-[6px] outline-none focus:border-slate-800 text-sm font-mono" />
                   </div>
                 </div>
               </div>
