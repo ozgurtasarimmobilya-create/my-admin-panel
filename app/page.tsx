@@ -1,196 +1,132 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
-// --- TİPLER VE YARDIMCI VERİLER ---
-interface Block {
-  id: string;
-  label: string;
-  content: string;
-  type: string;
-}
-
-export default function SEOAdminWithLogin() {
-  // --- 1. GÜVENLİK VE GİRİŞ DURUMU (ŞİFRELEME) ---
-  // Geliştirme aşaması için basit şifre: 'seo2024' (Gerçek projede ENV veya DB'den gelmeli)
-  const [password, setPassword] = useState('');
+export default function SEOAdminLogin() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loginError, setLoginError] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [lang, setLang] = useState('TR');
 
-  // --- 2. EDİTÖR VERİLERİ (GİRİŞ YAPINCA GÖRÜNECEK) ---
-  const [blocks, setBlocks] = useState<Block[]>([]);
-  const [meta, setMeta] = useState({ h1: '', snippet: '', intro: '' });
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => { setMounted(true); }, []);
-  if (!mounted) return null;
-
-  // --- FONKSİYONLAR (Editör) ---
-  const addBlock = (label: string) => {
-    setBlocks([...blocks, { 
-      id: Math.random().toString(36).substring(2, 9), 
-      label, 
-      content: '',
-      type: label === 'Başlık' ? 'heading' : 'paragraph'
-    }]);
-  };
-
-  const autoResize = (e: any) => {
-    e.target.style.height = 'auto';
-    e.target.style.height = e.target.scrollHeight + 'px';
-  };
-
-  // --- GİRİŞ KONTROLÜ ---
+  // Giriş simülasyonu
   const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault(); // Sayfanın yenilenmesini engelle
-    if (password === 'seo2024') { // Basit şifre kontrolü
+    e.preventDefault();
+    if (password === 'seo2024') {
       setIsAuthenticated(true);
-      setLoginError(false);
     } else {
-      setLoginError(true);
-      setPassword(''); // Şifreyi temizle
+      alert('Hatalı giriş!');
     }
   };
 
-
-  // --- SENARYO 1: GİRİŞ YAPILMADIYSA (Giriş Ekranı) ---
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen flex text-left font-sans overflow-hidden bg-[#232328]">
-        {/* SOL TARAF: MARKALAMA VE ESTETİK (İstenen Renkler) */}
-        <div className="w-1/2 bg-[#232328] text-[#edede7] p-24 flex flex-col justify-center border-r border-white/5">
-          <div className="flex items-center gap-3 mb-10 text-left">
-            <div className="w-12 h-12 bg-emerald-500 rounded-[12px] flex items-center justify-center font-black text-white text-2xl">S</div>
-            <span className="font-bold tracking-tighter text-4xl">SEO ADMIN</span>
+      <div className="min-h-screen flex font-sans bg-[#232328] text-[#edede7]">
+        
+        {/* SOL TARAF: MARKA ALANI */}
+        <div className="hidden lg:flex w-[40%] bg-[#232328] p-20 flex-col justify-between border-r border-white/5 shadow-2xl">
+          <div>
+            <div className="flex items-center gap-4 mb-8">
+              <div className="w-12 h-12 bg-emerald-500 rounded-[12px] flex items-center justify-center font-black text-white text-2xl shadow-lg shadow-emerald-500/20">S</div>
+              <span className="font-bold tracking-tighter text-3xl uppercase">SEO Admin</span>
+            </div>
+            <h1 className="text-5xl font-extrabold tracking-tighter leading-tight mb-6">
+              İçeriğin <br /> <span className="text-emerald-400 italic">Mimarisi.</span>
+            </h1>
           </div>
-          <p className="text-[#edede7]/80 text-lg leading-relaxed text-left italic max-w-md">"DuPont Corian gibi premium içerikler üretmek için tasarlandı. Sadece davet edilenler girebilir."</p>
+          
+          <div className="space-y-4">
+            <p className="text-sm text-[#edede7]/50 font-medium tracking-widest uppercase italic">Design by Mimar v4.0</p>
+          </div>
         </div>
 
         {/* SAĞ TARAF: GİRİŞ FORMU */}
-        <div className="flex-1 bg-white p-24 flex flex-col justify-center text-left">
-          <div className="max-w-md mx-auto w-full text-left">
-            <nav className="flex items-center gap-3 mb-12 text-sm text-slate-400 font-medium">
-               <span>Güvenli Alan</span>
-               <span>/</span>
-               <span className="font-bold text-slate-900 bg-slate-50 px-3 py-1 rounded-lg border border-slate-100">Kimlik Doğrulama</span>
-            </nav>
-            <h2 className="text-4xl font-extrabold text-slate-950 tracking-tighter mb-4">Hoş Geldiniz</h2>
-            <p className="text-slate-600 mb-12">Lütfen panelin kilidini açmak için şifrenizi girin.</p>
+        <div className="flex-1 bg-white flex flex-col justify-center px-8 md:px-24 text-slate-900">
+          <div className="max-w-md w-full mx-auto space-y-10">
+            
+            {/* Üst Başlık */}
+            <div className="text-left">
+              <h2 className="text-3xl font-black tracking-tighter text-slate-900 mb-2">Oturum Aç</h2>
+              <p className="text-slate-400 text-sm font-medium">Lütfen yönetim paneline erişmek için bilgilerinizi girin.</p>
+            </div>
 
             <form onSubmit={handleLogin} className="space-y-6 text-left">
+              {/* Kullanıcı Adı */}
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-900 uppercase tracking-widest block">Admin Şifresi</label>
+                <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest ml-1">Kullanıcı Adı veya E-posta</label>
+                <input 
+                  type="text" 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full p-4 bg-slate-50 border border-slate-100 rounded-[12px] outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/5 transition-all text-slate-900 font-medium"
+                  placeholder="admin@site.com"
+                  required
+                />
+              </div>
+
+              {/* Parola */}
+              <div className="space-y-2">
+                <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest ml-1">Parola</label>
                 <input 
                   type="password" 
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className={`w-full p-4 border rounded-[10px] text-lg font-mono tracking-widest placeholder:text-slate-200 outline-none transition-all ${loginError ? 'border-red-400 bg-red-50 focus:ring-2 focus:ring-red-200' : 'border-slate-100 bg-slate-50 focus:border-slate-400 focus:ring-2 focus:ring-slate-100'}`}
+                  className="w-full p-4 bg-slate-50 border border-slate-100 rounded-[12px] outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/5 transition-all text-slate-900 font-mono tracking-widest"
                   placeholder="••••••••"
                   required
                 />
-                {loginError && <p className="text-red-600 text-xs font-bold mt-1.5">Şifre yanlış, tekrar deneyin.</p>}
               </div>
 
-              <button 
-                type="submit" 
-                className="w-full py-4 bg-slate-900 text-white rounded-[10px] font-bold text-sm hover:bg-emerald-600 transition-all shadow-lg active:scale-95 cursor-pointer uppercase tracking-widest"
-              >
-                Paneli Kilidini Aç
-              </button>
+              {/* Beni Hatırla & Şifremi Unuttun */}
+              <div className="flex items-center justify-between text-sm">
+                <label className="flex items-center gap-2 cursor-pointer group">
+                  <input type="checkbox" className="w-4 h-4 rounded border-slate-300 text-emerald-500 focus:ring-emerald-500 transition-all cursor-pointer" />
+                  <span className="text-slate-500 font-medium group-hover:text-slate-900 transition-colors">Beni Hatırla</span>
+                </label>
+                <button type="button" className="text-emerald-600 font-bold hover:text-emerald-700 transition-colors cursor-pointer">Parolanızı mı unuttunuz?</button>
+              </div>
+
+              {/* Butonlar */}
+              <div className="space-y-4 pt-4">
+                <button 
+                  type="submit" 
+                  className="w-full py-4 bg-[#232328] text-white rounded-[12px] font-bold text-sm hover:bg-emerald-600 transition-all shadow-xl shadow-slate-200 active:scale-95 cursor-pointer uppercase tracking-widest"
+                >
+                  Oturum Aç
+                </button>
+                
+                <button 
+                  type="button"
+                  className="w-full py-4 bg-white border border-slate-100 text-slate-400 rounded-[12px] font-bold text-[11px] hover:text-slate-900 hover:border-slate-300 transition-all uppercase tracking-widest cursor-pointer"
+                >
+                  ← Web Sitesine Dön
+                </button>
+              </div>
             </form>
+
+            {/* Dil Seçeneği */}
+            <div className="pt-10 flex items-center justify-center gap-6 border-t border-slate-50">
+              {['TR', 'EN', 'DE'].map((l) => (
+                <button 
+                  key={l}
+                  onClick={() => setLang(l)}
+                  className={`text-[10px] font-black tracking-widest transition-all ${lang === l ? 'text-emerald-500 border-b-2 border-emerald-500' : 'text-slate-300 hover:text-slate-500 hover:scale-110'}`}
+                >
+                  {l}
+                </button>
+              ))}
+            </div>
+
           </div>
         </div>
       </div>
     );
   }
 
-
-  // --- SENARYO 2: GİRİŞ YAPILDIYSA (O Muhteşem Editör Paneli) ---
+  // BURASI GİRİŞ YAPILINCA AÇILACAK PANEL (Önceki editör kodun buraya gelecek)
   return (
-    <div className="flex h-screen bg-[#F8F9FB] text-[#1D1D1F] font-sans overflow-hidden text-left">
-      
-      {/* 1. SOL PANEL: ADMIN NAVIGASYON (Koyu Renkler Korundu) */}
-      <aside className="w-72 bg-[#232328] text-[#edede7] flex flex-col z-50 shadow-2xl">
-        <div className="p-8 border-b border-white/5 text-left">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center font-black text-white">S</div>
-            <span className="font-bold tracking-tighter text-xl text-[#edede7]">SEO ADMIN</span>
-          </div>
-        </div>
-
-        <nav className="flex-1 p-6 space-y-8 overflow-y-auto scrollbar-hide text-left">
-          {/* Editör Bileşenleri */}
-          <div className="space-y-3 text-left">
-            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-2">Editör Araçları</p>
-            <div className="grid grid-cols-2 gap-2 text-left">
-              {['Başlık', 'Paragraf', 'Liste', 'Görsel', 'SSS', 'Tablo'].map(item => (
-                <button key={item} onClick={() => addBlock(item)} className="p-3 bg-white/5 border border-white/5 rounded-xl text-[11px] font-bold hover:bg-white/10 hover:border-white/20 transition-all text-center">
-                  + {item}
-                </button>
-              ))}
-            </div>
-          </div>
-        </nav>
-
-        <div className="p-6 border-t border-white/5 text-left">
-          <button onClick={() => setIsAuthenticated(false)} className="w-full py-3 rounded-xl bg-red-500/10 text-red-400 text-xs font-bold hover:bg-red-500 hover:text-white transition-all uppercase tracking-widest cursor-pointer">Güvenli Çıkış</button>
-        </div>
-      </aside>
-
-      {/* 2. ANA İÇERİK ALANI */}
-      <div className="flex-1 flex flex-col overflow-hidden bg-white text-left">
-        
-        {/* ÜST BAR */}
-        <header className="h-[70px] border-b border-slate-100 flex items-center justify-between px-10 bg-white z-40 text-left">
-          <div className="flex items-center gap-3 text-sm text-left">
-            <span className="font-bold text-slate-900 bg-slate-50 px-3 py-1 rounded-lg border border-slate-100">Yeni Sayfa Oluşturuluyor</span>
-          </div>
-          <div className="flex items-center gap-4 text-left">
-            <span className="text-[11px] font-bold text-slate-400">Taslak</span>
-            <button className="px-6 py-2 bg-slate-900 text-white text-xs font-bold rounded-xl hover:bg-emerald-600 transition-all active:scale-95 shadow-lg">YAYINLA</button>
-          </div>
-        </header>
-
-        {/* YAZIM ALANI */}
-        <main className="flex-1 overflow-y-auto scrollbar-hide bg-[#F8F9FB] p-12 text-left">
-          <div className="max-w-[850px] mx-auto space-y-8 text-left">
-            
-            {/* H1 BLOĞU - BELİRGİN ÇERÇEVE */}
-            <div className="p-8 bg-white border border-slate-200 rounded-[12px] shadow-sm hover:border-slate-400 transition-all text-left">
-              <div className="flex justify-between items-center mb-6 text-left">
-                 <span className="text-[10px] font-black bg-slate-900 text-white px-3 py-1.5 rounded-lg uppercase">H1 Başlık</span>
-                 <span className="text-xs font-mono font-bold bg-slate-50 px-2 py-1 rounded border border-slate-100">{meta.h1.length}/45</span>
-              </div>
-              <textarea 
-                value={meta.h1} onChange={(e) => setMeta({...meta, h1: e.target.value})} onInput={autoResize}
-                className="w-full text-4xl font-extrabold border-none outline-none resize-none bg-transparent placeholder:text-slate-200 text-slate-900LEADING-tight text-left"
-                placeholder="Başlık..." rows={1}
-              />
-            </div>
-
-            {/* DİNAMİK İÇERİK BLOKLARI */}
-            <div className="space-y-6 pb-40 text-left">
-              {blocks.map((block: any, index: number) => (
-                <div key={block.id} className="relative p-8 bg-white border border-slate-200 rounded-[12px] shadow-sm hover:border-emerald-400 transition-all text-left group">
-                  <button onClick={() => setBlocks(blocks.filter((b: any) => b.id !== block.id))} className="absolute -right-2 -top-2 opacity-0 group-hover:opacity-100 w-6 h-6 bg-red-500 text-white rounded-full text-[10px] shadow-lg transition-all z-10 cursor-pointer">✕</button>
-                  <textarea 
-                    value={block.content}
-                    onChange={(e) => {
-                      const nb = [...blocks]; nb[index].content = e.target.value; setBlocks(nb);
-                    }}
-                    onInput={autoResize}
-                    className={`w-full bg-transparent border-none outline-none resize-none text-left ${
-                      block.label === 'Başlık' ? 'text-2xl font-bold text-slate-900' : 'text-base text-slate-600 font-medium'
-                    }`}
-                    placeholder={`${block.label}...`}
-                    rows={1}
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-        </main>
-      </div>
+    <div className="p-20 text-center bg-[#F5F5F7] h-screen">
+      <h1 className="text-4xl font-black italic">Hoş geldin Mimar. Panel Hazırlanıyor...</h1>
+      <button onClick={() => setIsAuthenticated(false)} className="mt-8 px-8 py-3 bg-[#232328] text-white rounded-xl font-bold uppercase tracking-widest text-xs cursor-pointer">Güvenli Çıkış</button>
     </div>
   );
 }
